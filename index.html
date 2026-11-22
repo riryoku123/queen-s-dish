@@ -10,7 +10,7 @@
        1. DESIGN TOKENS & VARIABEL TEMA (BURGUNDY, GOLD SHINY & IVORY)
        ===================================================================== */
     :root {
-      --sidebar-w: 272px;
+      --sidebar-w: 274px;
       --burgundy-grad: linear-gradient(165deg, #6E112B 0%, #4A0A1C 58%, #2E0510 100%);
       --gold-shiny: linear-gradient(135deg, #BF953F 0%, #FCF6BA 35%, #B38728 65%, #FBF5B7 88%, #AA771C 100%);
       --gold-shiny-horiz: linear-gradient(90deg, transparent 0%, #BF953F 20%, #FCF6BA 50%, #BF953F 80%, transparent 100%);
@@ -18,7 +18,7 @@
 
       /* Light Mode (Ivory Royal) */
       --bg-page: #FAF6EE;
-      --bg-surface: #FFFFFF;
+      --bg-surface: #FFFDF9;
       --bg-surface-alt: #F3ECE0;
       --border-soft: #E5D9C5;
       --text-main: #2A0812;
@@ -36,7 +36,7 @@
       --border-soft: #471A27;
       --text-main: #FAF4EB;
       --text-muted: #C6AEB4;
-      --shadow-card: 0 8px 26px rgba(0, 0, 0, 0.38);
+      --shadow-card: 0 8px 26px rgba(0, 0, 0, 0.42);
       --accent-burgundy: #8E1B3B;
       --accent-gold-border: #D4AF37;
     }
@@ -86,7 +86,7 @@
     }
 
     /* =====================================================================
-       2. SIDEBAR DESKTOP & MOBILE DRAWER
+       2. SIDEBAR DESKTOP & DRAWER MOBILE
        ===================================================================== */
     #desktop-sidebar {
       position: fixed;
@@ -373,7 +373,7 @@
       }
     }
 
-    /* Landscape compact adjustment on mobile */
+    /* Orientasi Horizontal (Landscape) pada HP */
     @media (orientation: landscape) and (max-height: 540px) and (max-width: 767px) {
       #mobile-topbar {
         padding: 0.45rem 0.85rem;
@@ -384,8 +384,9 @@
       }
       .nav-btn-mobile {
         flex-direction: row;
-        gap: 0.35rem;
-        padding: 0.35rem 0.4rem;
+        gap: 0.3rem;
+        padding: 0.34rem 0.32rem;
+        font-size: 0.68rem;
       }
     }
 
@@ -400,8 +401,8 @@
       border-radius: 1.15rem;
       padding: 0.42rem;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.35rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.3rem;
       box-shadow: 0 12px 30px rgba(28, 3, 10, 0.42);
       transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
     }
@@ -424,12 +425,12 @@
       align-items: center;
       justify-content: center;
       gap: 0.2rem;
-      padding: 0.48rem 0.35rem;
+      padding: 0.46rem 0.25rem;
       border-radius: 0.85rem;
       border: 1px solid transparent;
       background: transparent;
       color: rgba(250, 246, 238, 0.78);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       position: relative;
       transition: all 0.2s ease;
@@ -541,15 +542,16 @@
     .mini-tabs-wrap {
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.25rem;
       padding: 0.25rem;
       border-radius: 0.75rem;
       background: var(--bg-surface-alt);
       border: 1px solid var(--border-soft);
+      flex-wrap: wrap;
     }
 
     .mini-tab-btn {
-      padding: 0.35rem 0.75rem;
+      padding: 0.35rem 0.7rem;
       border-radius: 0.55rem;
       border: none;
       background: transparent;
@@ -722,15 +724,15 @@
       border-top: 3px solid #D4AF37;
     }
 
-    /* Recipe Photo Frame (Dominant & Clickable for Dish Detail Modal) */
+    /* Recipe Photo Frame (Dominan & Clickable untuk Detail Full-Screen) */
     .recipe-photo-frame {
       position: relative;
       width: 100%;
-      height: 186px;
-      border-radius: 0.85rem;
+      height: 196px;
+      border-radius: 0.88rem;
       overflow: hidden;
       background: var(--burgundy-grad);
-      border: 1.25px solid rgba(212, 175, 55, 0.45);
+      border: 1.25px solid rgba(212, 175, 55, 0.5);
       margin-bottom: 0.65rem;
       cursor: pointer;
       transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -763,11 +765,11 @@
 
     .recipe-photo-hint {
       position: absolute;
-      bottom: 0.45rem;
-      right: 0.45rem;
-      padding: 0.22rem 0.55rem;
+      bottom: 0.48rem;
+      right: 0.48rem;
+      padding: 0.24rem 0.6rem;
       border-radius: 999px;
-      background: rgba(34, 4, 12, 0.82);
+      background: rgba(34, 4, 12, 0.84);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       color: #FCF6BA;
@@ -779,7 +781,7 @@
     }
 
     .recipe-details-toggle-bar {
-      margin-top: 0.65rem;
+      margin-top: 0.6rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -791,12 +793,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.44rem 0.68rem;
+      padding: 0.42rem 0.65rem;
       border-radius: 0.65rem;
       background: var(--bg-surface-alt);
       border: 1px solid var(--border-soft);
       color: var(--text-main);
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       font-weight: 700;
       transition: border-color 0.16s ease, background-color 0.16s ease;
     }
@@ -806,10 +808,10 @@
     }
 
     .recipe-collapsible-panel {
-      margin-top: 0.5rem;
+      margin-top: 0.45rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }
 
     .recipe-action-menu-wrap {
@@ -909,7 +911,7 @@
     .schedule-date-pane {
       background: linear-gradient(165deg, rgba(110, 17, 43, 0.08) 0%, rgba(212, 175, 55, 0.12) 100%);
       border-right: 1.5px solid var(--border-soft);
-      padding: 0.65rem 0.5rem;
+      padding: 0.65rem 0.45rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -923,7 +925,7 @@
     }
 
     .schedule-day-name {
-      font-size: 0.66rem;
+      font-size: 0.64rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.07em;
@@ -936,14 +938,14 @@
 
     .schedule-date-main {
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       font-weight: 800;
       line-height: 1.18;
       color: var(--text-main);
     }
 
     .schedule-date-sub {
-      font-size: 0.66rem;
+      font-size: 0.65rem;
       line-height: 1.25;
       color: var(--text-muted);
       font-weight: 600;
@@ -974,7 +976,7 @@
         align-items: center;
         justify-content: space-between;
         text-align: left;
-        padding: 0.65rem 0.9rem;
+        padding: 0.55rem 0.85rem;
       }
       .schedule-meals-grid {
         grid-template-columns: 1fr;
@@ -986,11 +988,11 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-soft);
       border-radius: 0.92rem;
-      padding: 0.62rem;
+      padding: 0.6rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 0.52rem;
+      gap: 0.5rem;
       min-width: 0;
       box-shadow: 0 3px 12px rgba(42, 8, 18, 0.05);
       transition: transform 0.16s ease, border-color 0.2s ease;
@@ -1001,7 +1003,7 @@
     }
 
     .schedule-slot-card.is-done {
-      opacity: 0.74;
+      opacity: 0.75;
     }
 
     .schedule-slot-header {
@@ -1022,12 +1024,12 @@
     .schedule-photo-frame {
       position: relative;
       width: 100%;
-      height: 132px;
-      border-radius: 0.75rem;
+      height: 140px;
+      border-radius: 0.76rem;
       overflow: hidden;
       background: var(--burgundy-grad);
-      border: 1px solid var(--border-soft);
-      margin-bottom: 0.45rem;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      margin-bottom: 0.48rem;
     }
 
     .schedule-photo-frame.clickable-dish {
@@ -1118,6 +1120,53 @@
       color: var(--text-muted);
       font-size: 0.75rem;
       text-align: center;
+    }
+
+    /* Belanja List Items */
+    .shopping-list-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .shopping-item-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 0.95rem;
+      padding: 0.78rem 0.95rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      transition: border-color 0.18s ease, opacity 0.18s ease;
+    }
+
+    .shopping-item-row:hover {
+      border-color: rgba(212, 175, 55, 0.75);
+    }
+
+    .shopping-item-row.checked-item {
+      opacity: 0.72;
+      background: var(--bg-surface-alt);
+    }
+
+    .shopping-check-label {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      cursor: pointer;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .shopping-checkbox {
+      width: 1.18rem;
+      height: 1.18rem;
+      accent-color: #6E112B;
+      cursor: pointer;
+      flex-shrink: 0;
     }
 
     .log-table {
@@ -1302,7 +1351,88 @@
       color: #FB7185;
     }
 
-    /* Modals */
+    /* =====================================================================
+       5. FULL-SCREEN DETAIL MASAKAN & MODALS
+       ===================================================================== */
+    #modal-dish-detail {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      z-index: 70;
+      background: var(--bg-page);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .detail-fullscreen-shell {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg-page);
+    }
+
+    .detail-fullscreen-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--burgundy-grad);
+      color: var(--ivory-text);
+      border-bottom: 2px solid transparent;
+      border-image: var(--gold-shiny-horiz) 1;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      box-shadow: 0 4px 18px rgba(24, 3, 9, 0.28);
+      flex-shrink: 0;
+    }
+
+    .detail-fullscreen-body {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1.25rem;
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .detail-fullscreen-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    @media (min-width: 820px) {
+      .detail-fullscreen-body {
+        padding: 1.75rem 2rem 3rem;
+      }
+      .detail-fullscreen-grid {
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+        gap: 1.65rem;
+      }
+    }
+
+    .detail-fullscreen-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 1.1rem;
+      padding: 1.1rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -1331,10 +1461,6 @@
       gap: 0.9rem;
     }
 
-    .modal-card.detail-wide {
-      max-width: 560px;
-    }
-
     .modal-header {
       display: flex;
       align-items: center;
@@ -1345,11 +1471,17 @@
 
     .detail-hero-box {
       width: 100%;
-      height: 220px;
-      border-radius: 0.9rem;
+      height: 250px;
+      border-radius: 0.92rem;
       overflow: hidden;
       border: 1.25px solid rgba(212, 175, 55, 0.55);
       background: var(--burgundy-grad);
+    }
+
+    @media (min-width: 820px) {
+      .detail-hero-box {
+        height: 290px;
+      }
     }
 
     .detail-hero-box img {
@@ -1364,11 +1496,11 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.6rem 0.75rem;
+      padding: 0.65rem 0.8rem;
       border-radius: 0.75rem;
       background: var(--bg-surface-alt);
       border: 1px solid var(--border-soft);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 700;
     }
 
@@ -1417,7 +1549,7 @@
 
   <div class="app-shell">
     <!-- ===================================================================
-         SIDEBAR DESKTOP & DRAWER MOBILE
+         SIDEBAR DESKTOP & DRAWER MOBILE (4 NAVIGASI: STOCK, MAKANAN, SCHEDULE, BELANJA)
          =================================================================== -->
     <aside id="desktop-sidebar" aria-label="Sidebar Utama">
       <div>
@@ -1441,6 +1573,7 @@
         </div>
 
         <nav class="sidebar-nav" aria-label="Navigasi Utama">
+          <!-- 1. Stock -->
           <button onclick="switchTab('stock')" data-nav="stock" class="nav-btn-desktop active">
             <span style="display:flex;align-items:center;gap:0.65rem;">
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -1451,6 +1584,7 @@
             <span id="sidebar-stock-alert" class="badge badge-rose hidden">0</span>
           </button>
 
+          <!-- 2. Makanan -->
           <button onclick="switchTab('recipes')" data-nav="recipes" class="nav-btn-desktop">
             <span style="display:flex;align-items:center;gap:0.65rem;">
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -1461,6 +1595,7 @@
             <span id="sidebar-ready-count" style="font-size:0.72rem;font-weight:800;opacity:0.88;">0 siap</span>
           </button>
 
+          <!-- 3. Schedule -->
           <button onclick="switchTab('schedule')" data-nav="schedule" class="nav-btn-desktop">
             <span style="display:flex;align-items:center;gap:0.65rem;">
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -1469,6 +1604,17 @@
               <span>Schedule</span>
             </span>
             <span id="sidebar-schedule-count" style="font-size:0.72rem;font-weight:800;opacity:0.88;">0 jadwal</span>
+          </button>
+
+          <!-- 4. Belanja (Logo Keranjang Belanja) -->
+          <button onclick="switchTab('shopping')" data-nav="shopping" class="nav-btn-desktop">
+            <span style="display:flex;align-items:center;gap:0.65rem;">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              <span>Belanja</span>
+            </span>
+            <span id="sidebar-shopping-count" style="font-size:0.72rem;font-weight:800;opacity:0.88;">0 item</span>
           </button>
         </nav>
       </div>
@@ -1527,6 +1673,7 @@
             <button onclick="switchTab('stock')" data-mini-nav="stock" class="mini-tab-btn active">Stock</button>
             <button onclick="switchTab('recipes')" data-mini-nav="recipes" class="mini-tab-btn">Makanan</button>
             <button onclick="switchTab('schedule')" data-mini-nav="schedule" class="mini-tab-btn">Schedule</button>
+            <button onclick="switchTab('shopping')" data-mini-nav="shopping" class="mini-tab-btn">Belanja</button>
           </div>
         </div>
 
@@ -1662,18 +1809,15 @@
         </section>
 
         <!-- ===============================================================
-             VIEW 2: MAKANAN
+             VIEW 2: MAKANAN (KARTU DOMINAN GAMBAR, TANPA TOMBOL GLOBAL SEMBUNYIKAN SEMUA)
              =============================================================== -->
         <section id="view-recipes" class="hidden" aria-label="Daftar Makanan & Resep">
           <div class="view-header">
             <div>
               <h2 class="view-title">Makanan</h2>
-              <p class="view-subtitle">Klik gambar untuk detail lengkap, atau toggle bahan &amp; deskripsi langsung di kartu.</p>
+              <p class="view-subtitle">Klik gambar untuk membuka detail masakan penuh satu layar.</p>
             </div>
             <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-              <button type="button" id="toggle-all-recipe-details-btn" onclick="toggleAllRecipeDetails()" class="btn btn-secondary">
-                👁 Sembunyikan Bahan &amp; Deskripsi
-              </button>
               <button type="button" onclick="openRecipeModal()" class="btn btn-primary">+ Tambah Makanan</button>
             </div>
           </div>
@@ -1691,7 +1835,7 @@
         </section>
 
         <!-- ===============================================================
-             VIEW 3: SCHEDULE
+             VIEW 3: SCHEDULE (KOTAK TANGGAL RAMPING 98px + 4 SLOT PAGI, SIANG, MALAM, EKSTRA)
              =============================================================== -->
         <section id="view-schedule" class="hidden" aria-label="Schedule Masakan">
           <div class="view-header">
@@ -1721,32 +1865,102 @@
 
           <div id="schedule-list-container" class="schedule-board-wrap"></div>
         </section>
+
+        <!-- ===============================================================
+             VIEW 4: BELANJA (KERANJANG BELANJA & SINKRONISASI STOCK)
+             =============================================================== -->
+        <section id="view-shopping" class="hidden" aria-label="Daftar Belanja">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Belanja</h2>
+              <p class="view-subtitle">Kelola daftar belanja harian dan pindahkan item tercentang langsung ke Stock.</p>
+            </div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <button type="button" onclick="importLowStockToShopping()" class="btn btn-secondary">📥 Ambil dari Stock Menipis</button>
+              <button type="button" onclick="moveCheckedShoppingToStock()" class="btn btn-gold">✓ Masukkan ke Stock</button>
+            </div>
+          </div>
+
+          <!-- Form Tambah Item Belanja Manual -->
+          <form id="form-shopping-add" onsubmit="addShoppingItemManual(event)" class="royal-card" style="margin-bottom:1.15rem;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:0.65rem;align-items:end;">
+              <div class="form-group" style="grid-column:span 2;min-width:190px;">
+                <label class="form-label" for="shopping-name-input">Nama Barang / Bahan *</label>
+                <input type="text" id="shopping-name-input" required placeholder="Contoh: Minyak Goreng Kelapa" class="input-field" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shopping-qty-input">Jumlah *</label>
+                <input type="number" id="shopping-qty-input" step="any" min="0.1" value="1" required class="input-field" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shopping-unit-input">Satuan *</label>
+                <input type="text" id="shopping-unit-input" required value="gram" placeholder="gram, ml, butir" class="input-field" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shopping-cat-input">Kategori</label>
+                <select id="shopping-cat-input" class="select-field">
+                  <option value="Protein">Protein</option>
+                  <option value="Sayur & Buah">Sayur &amp; Buah</option>
+                  <option value="Bumbu & Rempah">Bumbu &amp; Rempah</option>
+                  <option value="Bahan Kering">Bahan Kering</option>
+                  <option value="Dairy & Minyak">Dairy &amp; Minyak</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shopping-note-input">Catatan</label>
+                <input type="text" id="shopping-note-input" placeholder="Opsional" class="input-field" />
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">+ Tambah</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="log-section-bar">
+            <div class="log-title-group">
+              <span>🛒 Keranjang Belanja</span>
+              <span id="shopping-summary-badge" class="badge badge-neutral">0 item</span>
+            </div>
+            <button type="button" onclick="clearCheckedShoppingItems()" class="btn btn-secondary" style="padding:0.35rem 0.7rem;font-size:0.75rem;">
+              Bersihkan Tercentang
+            </button>
+          </div>
+
+          <div id="shopping-list-container" class="shopping-list-wrap"></div>
+        </section>
       </main>
     </div>
   </div>
 
-  <!-- BOTTOM NAV MOBILE -->
+  <!-- BOTTOM NAV MOBILE (4 MENU: STOCK, MAKANAN, SCHEDULE, BELANJA) -->
   <nav id="mobile-bottom-nav" aria-label="Navigasi Bawah Mobile">
     <button onclick="switchTab('stock')" data-nav="stock" class="nav-btn-mobile active">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
       </svg>
       <span>Stock</span>
-      <span id="mobile-stock-dot" class="hidden" style="position:absolute;top:5px;right:24%;width:7px;height:7px;border-radius:999px;background:#FB7185;"></span>
+      <span id="mobile-stock-dot" class="hidden" style="position:absolute;top:5px;right:22%;width:7px;height:7px;border-radius:999px;background:#FB7185;"></span>
     </button>
 
     <button onclick="switchTab('recipes')" data-nav="recipes" class="nav-btn-mobile">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
       </svg>
       <span>Makanan</span>
     </button>
 
     <button onclick="switchTab('schedule')" data-nav="schedule" class="nav-btn-mobile">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
       <span>Schedule</span>
+    </button>
+
+    <button onclick="switchTab('shopping')" data-nav="shopping" class="nav-btn-mobile">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+      <span>Belanja</span>
     </button>
   </nav>
 
@@ -1756,10 +1970,10 @@
   </button>
 
   <!-- =====================================================================
-       MODAL DETAIL MAKANAN (DIBUKA SAAT GAMBAR DIKLIK)
+       TAMPILAN DETAIL MAKANAN FULL-SCREEN (100vw x 100vh)
        ===================================================================== -->
-  <div id="modal-dish-detail" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'modal-dish-detail')">
-    <div id="dish-detail-content" class="modal-card detail-wide" onclick="event.stopPropagation()"></div>
+  <div id="modal-dish-detail" class="hidden" role="dialog" aria-modal="true" aria-label="Detail Masakan">
+    <div id="dish-detail-content" class="detail-fullscreen-shell"></div>
   </div>
 
   <!-- =====================================================================
@@ -1939,7 +2153,7 @@
 
       <div style="padding:0.85rem;border-radius:0.9rem;background:var(--bg-surface-alt);border:1px solid var(--border-soft);font-size:0.8rem;color:var(--text-muted);">
         <strong style="color:var(--text-main);display:block;margin-bottom:0.2rem;">100% Penyimpanan Lokal (No Internet)</strong>
-        Semua data Stock, Makanan, Schedule, Zoom, dan Tema tersimpan di perangkat Anda. Gunakan Export JSON untuk mencadangkan data kapan saja.
+        Semua data Stock, Makanan, Schedule, Belanja, Zoom, dan Tema tersimpan di perangkat Anda. Gunakan Export JSON untuk mencadangkan data kapan saja.
       </div>
 
       <button onclick="exportBackupJSON(); closeModal('modal-data')" class="btn btn-primary" style="width:100%;padding:0.85rem;">
@@ -1983,11 +2197,10 @@
     /* =====================================================================
        1. KUNCI PENYIMPANAN & DATA AWAL
        ===================================================================== */
-    const STORAGE_KEY = "queens_dish_pwa_data_v1";
+    const STORAGE_KEY = "queens_dish_pwa_data_v2";
     const ZOOM_STORAGE_KEY = "queens_dish_zoom_v1";
     const THEME_STORAGE_KEY = "queens_dish_theme_v1";
     const NAV_HIDDEN_KEY = "queens_dish_nav_hidden_v1";
-    const RECIPE_DETAILS_HIDDEN_KEY = "queens_dish_recipe_details_hidden_v1";
 
     function getTodayISO(offsetDays = 0) {
       const d = new Date();
@@ -2051,18 +2264,23 @@
         { id: "sc-1", date: getTodayISO(0), slot: "Pagi", recipeId: "rc-2", title: "Nasi Goreng Telur Kampung", note: "Sarapan hangat", photo: "", cooked: false },
         { id: "sc-2", date: getTodayISO(0), slot: "Siang", recipeId: "rc-3", title: "Bening Bayam Bawang", note: "", photo: "", cooked: false },
         { id: "sc-3", date: getTodayISO(1), slot: "Malam", recipeId: "rc-1", title: "Ayam Panggang Madu", note: "Cek stok madu dulu", photo: "", cooked: false }
+      ],
+      shopping: [
+        { id: "sh-1", name: "Madu Murni", qty: 200, unit: "ml", category: "Dairy & Minyak", note: "Stok menipis", checked: false },
+        { id: "sh-2", name: "Jeruk Nipis", qty: 4, unit: "butir", category: "Sayur & Buah", note: "", checked: false }
       ]
     };
 
     function loadAppData() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("queens_dish_pwa_data_v1");
         if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
         const parsed = JSON.parse(raw);
         return {
           stock: Array.isArray(parsed.stock) ? parsed.stock : JSON.parse(JSON.stringify(DEFAULT_DATA.stock)),
           recipes: Array.isArray(parsed.recipes) ? parsed.recipes : JSON.parse(JSON.stringify(DEFAULT_DATA.recipes)),
-          schedule: Array.isArray(parsed.schedule) ? parsed.schedule : JSON.parse(JSON.stringify(DEFAULT_DATA.schedule))
+          schedule: Array.isArray(parsed.schedule) ? parsed.schedule : JSON.parse(JSON.stringify(DEFAULT_DATA.schedule)),
+          shopping: Array.isArray(parsed.shopping) ? parsed.shopping : JSON.parse(JSON.stringify(DEFAULT_DATA.shopping))
         };
       } catch (e) {
         return JSON.parse(JSON.stringify(DEFAULT_DATA));
@@ -2073,16 +2291,7 @@
     let currentTab = "stock";
     let scheduleDayOffset = 0;
     let activeRecipePopoverId = null;
-
-    // Menyimpan status hide/show bahan & deskripsi per resep + default global
-    let hideAllRecipeDetails = (() => {
-      try {
-        return localStorage.getItem(RECIPE_DETAILS_HIDDEN_KEY) === "true";
-      } catch (e) {
-        return false;
-      }
-    })();
-    const perRecipeDetailOverride = new Map();
+    const perRecipeDetailExpanded = new Set();
 
     function saveAppData() {
       try {
@@ -2249,17 +2458,17 @@
     }
 
     /* =====================================================================
-       3. NAVIGASI TAB & SWIPE GESTURE
+       3. NAVIGASI TAB & SWIPE GESTURE (STOCK -> MAKANAN -> SCHEDULE -> BELANJA)
        ===================================================================== */
-    const TAB_ORDER = ["stock", "recipes", "schedule"];
-    const TAB_LABELS = { stock: "Stock", recipes: "Makanan", schedule: "Schedule" };
+    const TAB_ORDER = ["stock", "recipes", "schedule", "shopping"];
+    const TAB_LABELS = { stock: "Stock", recipes: "Makanan", schedule: "Schedule", shopping: "Belanja" };
 
     function switchTab(tabName) {
       if (!TAB_ORDER.includes(tabName)) return;
       activeRecipePopoverId = null;
       currentTab = tabName;
 
-      ["stock", "recipes", "schedule"].forEach((t) => {
+      TAB_ORDER.forEach((t) => {
         const viewEl = document.getElementById(`view-${t}`);
         if (viewEl) viewEl.classList.toggle("hidden", t !== tabName);
       });
@@ -2285,6 +2494,7 @@
       if (tabName === "stock") renderStockView();
       if (tabName === "recipes") renderRecipesView();
       if (tabName === "schedule") renderScheduleView();
+      if (tabName === "shopping") renderShoppingView();
     }
 
     (function setupSwipeNavigation() {
@@ -2501,6 +2711,10 @@
 
       const sSched = document.getElementById("sidebar-schedule-count");
       if (sSched) sSched.textContent = `${appData.schedule.length} jadwal`;
+
+      const remainingShop = (appData.shopping || []).filter((i) => !i.checked).length;
+      const sShop = document.getElementById("sidebar-shopping-count");
+      if (sShop) sShop.textContent = `${remainingShop} item`;
     }
 
     /* =====================================================================
@@ -2755,45 +2969,23 @@
     }
 
     /* =====================================================================
-       6. VIEW 2: MAKANAN (RESEP, FOTO, HIDE/SHOW BAHAN & DESKRIPSI, MODAL DETAIL)
+       6. VIEW 2: MAKANAN (KARTU DOMINAN GAMBAR & DETAIL FULL-SCREEN)
        ===================================================================== */
-    function isRecipeDetailsHidden(recipeId) {
-      if (perRecipeDetailOverride.has(recipeId)) {
-        return Boolean(perRecipeDetailOverride.get(recipeId));
-      }
-      return Boolean(hideAllRecipeDetails);
-    }
-
     function toggleSingleRecipeDetails(event, recipeId) {
       if (event) event.stopPropagation();
-      const nextHidden = !isRecipeDetailsHidden(recipeId);
-      perRecipeDetailOverride.set(recipeId, nextHidden);
+      if (perRecipeDetailExpanded.has(recipeId)) {
+        perRecipeDetailExpanded.delete(recipeId);
+      } else {
+        perRecipeDetailExpanded.add(recipeId);
+      }
       renderRecipesView();
-    }
-
-    function toggleAllRecipeDetails() {
-      hideAllRecipeDetails = !hideAllRecipeDetails;
-      perRecipeDetailOverride.clear();
-      try {
-        localStorage.setItem(RECIPE_DETAILS_HIDDEN_KEY, String(hideAllRecipeDetails));
-      } catch (e) {}
-      renderRecipesView();
-      showToast(hideAllRecipeDetails ? "Bahan & deskripsi disembunyikan" : "Bahan & deskripsi ditampilkan");
-    }
-
-    function syncAllDetailsButtonLabel() {
-      const btn = document.getElementById("toggle-all-recipe-details-btn");
-      if (!btn) return;
-      btn.innerHTML = hideAllRecipeDetails
-        ? "👁 Tampilkan Semua Bahan &amp; Deskripsi"
-        : "🙈 Sembunyikan Semua Bahan &amp; Deskripsi";
     }
 
     function getDishIllustrationSVG(titleText) {
       const lower = String(titleText || "").toLowerCase();
       if (lower.includes("nasi goreng") || lower.includes("telur")) {
         return `
-          <svg width="64" height="64" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <svg width="68" height="68" viewBox="0 0 80 80" fill="none" aria-hidden="true">
             <circle cx="40" cy="44" r="28" fill="#FAF6EE" stroke="#D4AF37" stroke-width="2.5"/>
             <circle cx="40" cy="44" r="21" fill="#F3ECE0" stroke="#BF953F" stroke-width="1"/>
             <ellipse cx="40" cy="45" rx="16" ry="12" fill="#D99B52"/>
@@ -2808,7 +3000,7 @@
       }
       if (lower.includes("bayam") || lower.includes("sup") || lower.includes("sayur") || lower.includes("bening")) {
         return `
-          <svg width="64" height="64" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <svg width="68" height="68" viewBox="0 0 80 80" fill="none" aria-hidden="true">
             <path d="M16 40C16 54.3594 26.7452 64 40 64C53.2548 64 64 54.3594 64 40H16Z" fill="#FAF6EE" stroke="#D4AF37" stroke-width="2.5"/>
             <ellipse cx="40" cy="40" rx="24" ry="7" fill="#FDE68A" stroke="#D4AF37" stroke-width="1.5"/>
             <path d="M29 39C31 35 37 35 38 39C35 41 31 41 29 39Z" fill="#15803D"/>
@@ -2820,7 +3012,7 @@
       }
       if (lower.includes("ayam") || lower.includes("panggang") || lower.includes("daging") || lower.includes("steak")) {
         return `
-          <svg width="64" height="64" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <svg width="68" height="68" viewBox="0 0 80 80" fill="none" aria-hidden="true">
             <ellipse cx="40" cy="46" rx="27" ry="17" fill="#FAF6EE" stroke="#D4AF37" stroke-width="2.5"/>
             <path d="M26 44C26 37 34 33 43 35C50 36.5 54 42 51 48C48 53 38 54 31 51C27.5 49.5 26 47 26 44Z" fill="#B45309" stroke="#F59E0B" stroke-width="1.5"/>
             <path d="M33 39L39 48M39 38L45 47" stroke="#78350F" stroke-width="2" stroke-linecap="round"/>
@@ -2830,7 +3022,7 @@
         `;
       }
       return `
-        <svg width="42" height="42" viewBox="0 0 24 24" fill="#FCF6BA" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="#FCF6BA" aria-hidden="true">
           <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
         </svg>
       `;
@@ -2839,19 +3031,19 @@
     function renderRecipePhotoHTML(recipe) {
       if (recipe.photo) {
         return `
-          <div class="recipe-photo-frame" onclick="openDishDetailModal('${recipe.id}')" title="Klik untuk melihat detail masakan">
+          <div class="recipe-photo-frame" onclick="openDishDetailModal('${recipe.id}')" title="Klik untuk detail masakan penuh layar">
             <img src="${escapeHTML(recipe.photo)}" alt="${escapeHTML(recipe.name)}" loading="lazy" />
-            <span class="recipe-photo-hint">🔍 Detail</span>
+            <span class="recipe-photo-hint">⛶ Detail</span>
           </div>
         `;
       }
       return `
-        <div class="recipe-photo-frame" onclick="openDishDetailModal('${recipe.id}')" title="Klik untuk melihat detail masakan">
+        <div class="recipe-photo-frame" onclick="openDishDetailModal('${recipe.id}')" title="Klik untuk detail masakan penuh layar">
           <div class="recipe-photo-fallback" aria-hidden="true">
             ${getDishIllustrationSVG(recipe.name)}
             <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;opacity:0.9;">Queen's Dish</span>
           </div>
-          <span class="recipe-photo-hint">🔍 Detail</span>
+          <span class="recipe-photo-hint">⛶ Detail</span>
         </div>
       `;
     }
@@ -2879,70 +3071,84 @@
           ? status.details
               .map(
                 (d) => `
-              <li style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;padding:0.5rem 0.65rem;border-radius:0.65rem;background:var(--bg-surface-alt);border:1px solid var(--border-soft);font-size:0.82rem;">
+              <li style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;padding:0.55rem 0.7rem;border-radius:0.68rem;background:var(--bg-surface-alt);border:1px solid var(--border-soft);font-size:0.84rem;">
                 <div>
                   <strong style="color:var(--text-main);">${escapeHTML(d.name)}</strong>
-                  <span style="color:var(--text-muted);display:block;font-size:0.74rem;">Butuh: ${formatQty(d.needed)} ${escapeHTML(d.unit)} • Stok: ${formatQty(d.available)} ${escapeHTML(d.unit)}</span>
+                  <span style="color:var(--text-muted);display:block;font-size:0.76rem;">Butuh: ${formatQty(d.needed)} ${escapeHTML(d.unit)} • Stok: ${formatQty(d.available)} ${escapeHTML(d.unit)}</span>
                 </div>
-                <span style="font-weight:800;font-size:0.76rem;color:${d.enough ? "#059669" : "#E11D48"};">
+                <span style="font-weight:800;font-size:0.78rem;color:${d.enough ? "#059669" : "#E11D48"};">
                   ${d.enough ? "✓ Cukup" : `Kurang ${formatQty(d.missing)} ${escapeHTML(d.unit)}`}
                 </span>
               </li>
             `
               )
               .join("")
-          : `<p style="font-size:0.82rem;color:var(--text-muted);">Belum ada komposisi bahan tercatat.</p>`;
+          : `<p style="font-size:0.84rem;color:var(--text-muted);">Belum ada komposisi bahan tercatat.</p>`;
 
       modalBox.innerHTML = `
-        <div class="modal-header">
-          <div>
-            <h3 style="font-size:1.12rem;font-weight:800;color:var(--text-main);">${escapeHTML(recipe.name)}</h3>
-            <span style="font-size:0.74rem;color:var(--text-muted);">Detail Masakan, Bahan &amp; Cara Membuat</span>
+        <header class="detail-fullscreen-topbar">
+          <div style="display:flex;align-items:center;gap:0.65rem;min-width:0;">
+            <button type="button" onclick="closeModal('modal-dish-detail')" class="btn-icon-dark" title="Kembali" aria-label="Kembali">
+              <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <div style="min-width:0;">
+              <h3 class="gold-shiny-text" style="font-size:1.18rem;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHTML(recipe.name)}</h3>
+              <span style="font-size:0.7rem;color:rgba(252,246,186,0.8);">Detail Masakan • Bahan &amp; Cara Membuat</span>
+            </div>
           </div>
-          <button type="button" onclick="closeModal('modal-dish-detail')" class="btn btn-secondary" style="padding:0.35rem 0.65rem;">✕</button>
-        </div>
+          <button type="button" onclick="closeModal('modal-dish-detail')" class="btn-icon-dark" title="Tutup Detail" aria-label="Tutup Detail">✕</button>
+        </header>
 
-        <div class="detail-hero-box">${heroMedia}</div>
+        <div class="detail-fullscreen-body">
+          <div class="detail-fullscreen-grid">
+            <div class="detail-fullscreen-panel">
+              <div class="detail-hero-box">${heroMedia}</div>
 
-        <div class="detail-meta-strip">
-          <span>⏱ ${recipe.timeMin || 20} menit</span>
-          <span>•</span>
-          <span>🍽 ${recipe.servings || 1} porsi</span>
-          <span style="margin-left:auto;">
-            ${
-              status.canCook
-                ? `<span class="badge badge-emerald">Siap Masak</span>`
-                : `<span class="badge badge-amber">Bahan Kurang</span>`
-            }
-          </span>
-        </div>
+              <div class="detail-meta-strip">
+                <span>⏱ ${recipe.timeMin || 20} menit</span>
+                <span>•</span>
+                <span>🍽 ${recipe.servings || 1} porsi</span>
+                <span style="margin-left:auto;">
+                  ${
+                    status.canCook
+                      ? `<span class="badge badge-emerald">Siap Masak</span>`
+                      : `<span class="badge badge-amber">Bahan Kurang</span>`
+                  }
+                </span>
+              </div>
 
-        <div class="form-group">
-          <div style="font-size:0.8rem;font-weight:800;color:var(--text-main);">🧂 Daftar Bahan &amp; Ketersediaan Stock</div>
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.42rem;margin-top:0.15rem;">
-            ${ingredientsHTML}
-          </ul>
-        </div>
+              <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                <button type="button" onclick="closeModal('modal-dish-detail'); openRecipeModal('${recipe.id}')" class="btn btn-secondary" style="flex:1;">✏️ Edit</button>
+                <button type="button" onclick="closeModal('modal-dish-detail'); openScheduleModalFromRecipe('${recipe.id}')" class="btn btn-gold" style="flex:1;">📅 Jadwalkan</button>
+                <button
+                  type="button"
+                  onclick="cookRecipe('${recipe.id}'); openDishDetailModal('${recipe.id}')"
+                  class="btn ${status.canCook ? "btn-primary" : "btn-secondary"}"
+                  style="width:100%;"
+                >
+                  ${status.canCook ? "🍳 Masak Sekarang" : "Stok Belum Cukup"}
+                </button>
+              </div>
+            </div>
 
-        <div class="form-group">
-          <div style="font-size:0.8rem;font-weight:800;color:var(--text-main);">📖 Deskripsi &amp; Langkah Memasak</div>
-          <div style="padding:0.7rem 0.8rem;border-radius:0.75rem;background:var(--bg-surface-alt);border:1px solid var(--border-soft);font-size:0.83rem;line-height:1.55;color:var(--text-main);">
-            ${recipe.steps ? escapeHTML(recipe.steps) : `<span style="color:var(--text-muted);">Belum ada deskripsi atau langkah memasak.</span>`}
+            <div class="detail-fullscreen-panel">
+              <div class="form-group">
+                <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">🧂 Daftar Bahan (Kebutuhan vs Stock)</div>
+                <ul style="list-style:none;display:flex;flex-direction:column;gap:0.48rem;margin-top:0.2rem;">
+                  ${ingredientsHTML}
+                </ul>
+              </div>
+
+              <div class="form-group">
+                <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">📖 Deskripsi &amp; Cara Membuat</div>
+                <div style="padding:0.8rem 0.9rem;border-radius:0.78rem;background:var(--bg-surface-alt);border:1px solid var(--border-soft);font-size:0.86rem;line-height:1.6;color:var(--text-main);">
+                  ${recipe.steps ? escapeHTML(recipe.steps) : `<span style="color:var(--text-muted);">Belum ada deskripsi atau langkah memasak.</span>`}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:0.5rem;padding-top:0.55rem;border-top:1px solid var(--border-soft);">
-          <div style="display:flex;gap:0.45rem;">
-            <button type="button" onclick="closeModal('modal-dish-detail'); openRecipeModal('${recipe.id}')" class="btn btn-secondary">✏️ Edit</button>
-            <button type="button" onclick="closeModal('modal-dish-detail'); openScheduleModalFromRecipe('${recipe.id}')" class="btn btn-gold">📅 Jadwalkan</button>
-          </div>
-          <button
-            type="button"
-            onclick="cookRecipe('${recipe.id}'); openDishDetailModal('${recipe.id}')"
-            class="btn ${status.canCook ? "btn-primary" : "btn-secondary"}"
-          >
-            ${status.canCook ? "🍳 Masak Sekarang" : "Stok Belum Cukup"}
-          </button>
         </div>
       `;
 
@@ -2976,7 +3182,6 @@
 
     function renderRecipesView() {
       updateBadgesAndStats();
-      syncAllDetailsButtonLabel();
       const container = document.getElementById("recipes-grid-container");
       if (!container) return;
 
@@ -3010,7 +3215,7 @@
         .map((recipe) => {
           const status = getRecipeStatus(recipe);
           const isPopoverOpen = activeRecipePopoverId === recipe.id;
-          const detailsHidden = isRecipeDetailsHidden(recipe.id);
+          const isExpanded = perRecipeDetailExpanded.has(recipe.id);
 
           return `
             <article class="royal-card ${status.canCook ? "ready-recipe" : ""}">
@@ -3033,19 +3238,19 @@
                     type="button"
                     onclick="toggleSingleRecipeDetails(event, '${recipe.id}')"
                     class="recipe-inline-toggle-btn"
-                    aria-expanded="${!detailsHidden}"
+                    aria-expanded="${isExpanded}"
                   >
-                    <span>${detailsHidden ? "▸ Tampilkan Bahan &amp; Deskripsi" : "▾ Sembunyikan Bahan &amp; Deskripsi"}</span>
+                    <span>${isExpanded ? "▾ Ringkasan Bahan" : "▸ Lihat Bahan Singkat"}</span>
                     <span style="font-size:0.68rem;color:var(--text-muted);">${status.details.length} bahan</span>
                   </button>
                 </div>
 
-                <div class="recipe-collapsible-panel ${detailsHidden ? "hidden" : ""}">
-                  <ul style="list-style:none;display:flex;flex-direction:column;gap:0.35rem;font-size:0.8rem;">
+                <div class="recipe-collapsible-panel ${isExpanded ? "" : "hidden"}">
+                  <ul style="list-style:none;display:flex;flex-direction:column;gap:0.32rem;font-size:0.78rem;">
                     ${status.details
                       .map(
                         (d) => `
-                      <li style="display:flex;align-items:center;justify-content:space-between;gap:0.4rem;padding:0.28rem 0.45rem;border-radius:0.5rem;background:var(--bg-surface-alt);">
+                      <li style="display:flex;align-items:center;justify-content:space-between;gap:0.4rem;padding:0.25rem 0.45rem;border-radius:0.5rem;background:var(--bg-surface-alt);">
                         <span>${escapeHTML(d.name)} (${formatQty(d.needed)} ${escapeHTML(d.unit)})</span>
                         <span style="font-weight:700;color:${d.enough ? "#059669" : "#E11D48"};">
                           ${d.enough ? "Cukup" : `Kurang ${formatQty(d.missing)}`}
@@ -3055,12 +3260,6 @@
                       )
                       .join("")}
                   </ul>
-
-                  ${
-                    recipe.steps
-                      ? `<p style="font-size:0.78rem;color:var(--text-muted);line-height:1.45;padding:0.35rem 0.45rem;border-radius:0.5rem;background:var(--bg-surface-alt);">${escapeHTML(recipe.steps)}</p>`
-                      : ""
-                  }
                 </div>
               </div>
 
@@ -3251,7 +3450,7 @@
 
     function deleteRecipeItem(id) {
       appData.recipes = appData.recipes.filter((r) => r.id !== id);
-      perRecipeDetailOverride.delete(id);
+      perRecipeDetailExpanded.delete(id);
       saveAppData();
       renderRecipesView();
       showToast("Makanan dihapus");
@@ -3280,7 +3479,7 @@
     }
 
     /* =====================================================================
-       7. VIEW 3: SCHEDULE (HARI & TANGGAL DI KIRI | PAGI, SIANG, MALAM, EKSTRA DI KANAN)
+       7. VIEW 3: SCHEDULE (KOTAK TANGGAL RAMPING 98px + 4 SLOT PAGI, SIANG, MALAM, EKSTRA)
        ===================================================================== */
     const SCHEDULE_SLOTS = ["Pagi", "Siang", "Malam", "Ekstra"];
 
@@ -3331,7 +3530,7 @@
         ? `<span class="schedule-status-pill done">✓ Selesai</span>`
         : `<span class="schedule-status-pill planned">Terjadwal</span>`;
       const clickableAttr = scheduleItem.recipeId
-        ? `onclick="openDishDetailModal('${scheduleItem.recipeId}')" title="Klik untuk melihat detail resep"`
+        ? `onclick="openDishDetailModal('${scheduleItem.recipeId}')" title="Klik untuk melihat detail masakan penuh layar"`
         : "";
       const clickableClass = scheduleItem.recipeId ? "clickable-dish" : "";
 
@@ -3673,7 +3872,226 @@
     }
 
     /* =====================================================================
-       8. BACKUP / RESTORE JSON & RESET DATA
+       8. VIEW 4: BELANJA (DAFTAR BELANJA & MASUKKAN KE STOCK)
+       ===================================================================== */
+    function renderShoppingView() {
+      updateBadgesAndStats();
+      const container = document.getElementById("shopping-list-container");
+      const badge = document.getElementById("shopping-summary-badge");
+      if (!container) return;
+
+      const list = Array.isArray(appData.shopping) ? appData.shopping : [];
+      const checkedCount = list.filter((i) => i.checked).length;
+
+      if (badge) {
+        badge.textContent = `${list.length} item • ${checkedCount} tercentang`;
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="royal-card" style="text-align:center;padding:2rem;">
+            <p style="color:var(--text-muted);font-size:0.86rem;">Keranjang belanja masih kosong. Tambah item baru atau ambil dari Stock menipis.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list
+        .map(
+          (item) => `
+          <div class="shopping-item-row ${item.checked ? "checked-item" : ""}">
+            <label class="shopping-check-label">
+              <input
+                type="checkbox"
+                class="shopping-checkbox"
+                ${item.checked ? "checked" : ""}
+                onchange="toggleShoppingCheck('${item.id}')"
+              />
+              <div style="min-width:0;">
+                <div style="font-size:0.9rem;font-weight:800;color:var(--text-main);${item.checked ? "text-decoration:line-through;opacity:0.75;" : ""}">
+                  ${escapeHTML(item.name)}
+                </div>
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;margin-top:0.2rem;font-size:0.76rem;color:var(--text-muted);">
+                  <strong style="color:var(--text-main);">${formatQty(item.qty)} ${escapeHTML(item.unit)}</strong>
+                  <span class="badge badge-neutral">${escapeHTML(item.category || "Bahan Kering")}</span>
+                  ${item.note ? `<span>• ${escapeHTML(item.note)}</span>` : ""}
+                </div>
+              </div>
+            </label>
+
+            <div style="display:flex;align-items:center;gap:0.4rem;">
+              <button
+                type="button"
+                onclick="moveSingleShoppingToStock('${item.id}')"
+                class="btn btn-secondary"
+                style="padding:0.35rem 0.65rem;font-size:0.74rem;"
+              >
+                + ke Stock
+              </button>
+              <button
+                type="button"
+                onclick="deleteShoppingItem('${item.id}')"
+                class="btn btn-danger"
+                style="padding:0.35rem 0.65rem;font-size:0.74rem;"
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function addShoppingItemManual(event) {
+      event.preventDefault();
+      const nameInput = document.getElementById("shopping-name-input");
+      const qtyInput = document.getElementById("shopping-qty-input");
+      const unitInput = document.getElementById("shopping-unit-input");
+      const catInput = document.getElementById("shopping-cat-input");
+      const noteInput = document.getElementById("shopping-note-input");
+
+      const name = String(nameInput?.value || "").trim();
+      const qty = parseFloat(qtyInput?.value);
+      const unit = String(unitInput?.value || "").trim() || "gram";
+      const category = catInput?.value || "Bahan Kering";
+      const note = String(noteInput?.value || "").trim();
+
+      if (!name || !Number.isFinite(qty) || qty <= 0) return;
+
+      if (!Array.isArray(appData.shopping)) appData.shopping = [];
+      appData.shopping.unshift({
+        id: generateId("sh"),
+        name,
+        qty: Math.round(qty * 100) / 100,
+        unit,
+        category,
+        note,
+        checked: false
+      });
+
+      saveAppData();
+      renderShoppingView();
+
+      if (nameInput) nameInput.value = "";
+      if (qtyInput) qtyInput.value = "1";
+      if (noteInput) noteInput.value = "";
+      showToast(`"${name}" ditambahkan ke Belanja`);
+    }
+
+    function importLowStockToShopping() {
+      const lowItems = appData.stock.filter(isLowStock);
+      if (lowItems.length === 0) {
+        showToast("Tidak ada bahan Stock yang menipis");
+        return;
+      }
+
+      if (!Array.isArray(appData.shopping)) appData.shopping = [];
+      let addedCount = 0;
+
+      lowItems.forEach((st) => {
+        const exists = appData.shopping.some(
+          (sh) => !sh.checked && sh.name.trim().toLowerCase() === st.name.trim().toLowerCase()
+        );
+        if (!exists) {
+          const suggestedQty = Math.max(Number(st.minQty) || 100, Number(st.minQty) * 2 - Number(st.qty));
+          appData.shopping.unshift({
+            id: generateId("sh"),
+            name: st.name,
+            qty: Math.round(Math.max(1, suggestedQty) * 100) / 100,
+            unit: st.unit,
+            category: st.category || "Bahan Kering",
+            note: "Dari Stock menipis",
+            checked: false
+          });
+          addedCount += 1;
+        }
+      });
+
+      saveAppData();
+      renderShoppingView();
+      showToast(addedCount > 0 ? `${addedCount} item menipis masuk ke Belanja` : "Item menipis sudah ada di Belanja");
+    }
+
+    function toggleShoppingCheck(id) {
+      const item = (appData.shopping || []).find((i) => i.id === id);
+      if (!item) return;
+      item.checked = !item.checked;
+      saveAppData();
+      renderShoppingView();
+    }
+
+    function mergeShoppingItemIntoStock(shopItem) {
+      const target = appData.stock.find(
+        (s) => s.name.trim().toLowerCase() === shopItem.name.trim().toLowerCase()
+      );
+      if (target) {
+        target.qty = Math.round((Number(target.qty) + Number(shopItem.qty)) * 100) / 100;
+        if (shopItem.note && !target.note) {
+          target.note = shopItem.note;
+        }
+      } else {
+        const suggestedMin =
+          shopItem.unit.toLowerCase() === "butir" || shopItem.unit.toLowerCase() === "ikat" ? 2 : 100;
+        appData.stock.unshift({
+          id: generateId("st"),
+          name: shopItem.name,
+          category: shopItem.category || "Bahan Kering",
+          qty: Math.round(Number(shopItem.qty) * 100) / 100,
+          unit: shopItem.unit || "gram",
+          minQty: suggestedMin,
+          note: shopItem.note || ""
+        });
+      }
+    }
+
+    function moveSingleShoppingToStock(id) {
+      const item = (appData.shopping || []).find((i) => i.id === id);
+      if (!item) return;
+      mergeShoppingItemIntoStock(item);
+      appData.shopping = appData.shopping.filter((i) => i.id !== id);
+      saveAppData();
+      renderShoppingView();
+      showToast(`"${item.name}" dimasukkan ke Stock`);
+    }
+
+    function moveCheckedShoppingToStock() {
+      const list = Array.isArray(appData.shopping) ? appData.shopping : [];
+      const checked = list.filter((i) => i.checked);
+      if (checked.length === 0) {
+        showToast("Centang dulu item yang sudah dibeli");
+        return;
+      }
+
+      checked.forEach((item) => mergeShoppingItemIntoStock(item));
+      appData.shopping = list.filter((i) => !i.checked);
+      saveAppData();
+      renderShoppingView();
+      showToast(`${checked.length} item belanja dimasukkan ke Stock`);
+    }
+
+    function clearCheckedShoppingItems() {
+      const list = Array.isArray(appData.shopping) ? appData.shopping : [];
+      const before = list.length;
+      appData.shopping = list.filter((i) => !i.checked);
+      if (appData.shopping.length === before) {
+        showToast("Tidak ada item tercentang untuk dibersihkan");
+        return;
+      }
+      saveAppData();
+      renderShoppingView();
+      showToast("Item tercentang dibersihkan");
+    }
+
+    function deleteShoppingItem(id) {
+      appData.shopping = (appData.shopping || []).filter((i) => i.id !== id);
+      saveAppData();
+      renderShoppingView();
+      showToast("Item dihapus dari Belanja");
+    }
+
+    /* =====================================================================
+       9. BACKUP / RESTORE JSON & RESET DATA
        ===================================================================== */
     function openDataModal() {
       openModal("modal-data");
@@ -3683,7 +4101,7 @@
       try {
         const payload = {
           app: "Queen's Dish",
-          version: 1,
+          version: 2,
           exportedAt: new Date().toISOString(),
           data: appData
         };
@@ -3725,7 +4143,8 @@
           appData = {
             stock: source.stock,
             recipes: source.recipes,
-            schedule: source.schedule
+            schedule: source.schedule,
+            shopping: Array.isArray(source.shopping) ? source.shopping : []
           };
           saveAppData();
           closeModal("modal-data");
@@ -3740,7 +4159,7 @@
 
     function resetSampleData() {
       appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      perRecipeDetailOverride.clear();
+      perRecipeDetailExpanded.clear();
       saveAppData();
       closeModal("modal-data");
       switchTab(currentTab);
@@ -3748,7 +4167,7 @@
     }
 
     /* =====================================================================
-       9. PWA MANIFEST INLINE & SERVICE WORKER OFFLINE
+       10. PWA MANIFEST INLINE & SERVICE WORKER OFFLINE
        ===================================================================== */
     let deferredInstallPrompt = null;
 
@@ -3793,7 +4212,7 @@
       if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
         try {
           const swCode = `
-            const CACHE_NAME = "queens-dish-cache-v1";
+            const CACHE_NAME = "queens-dish-cache-v2";
             self.addEventListener("install", (event) => {
               event.waitUntil(
                 caches.open(CACHE_NAME).then((cache) => cache.addAll(["./"]).catch(() => {}))
@@ -3832,7 +4251,7 @@
     })();
 
     /* =====================================================================
-       10. INISIALISASI APLIKASI
+       11. INISIALISASI APLIKASI
        ===================================================================== */
     window.addEventListener("DOMContentLoaded", () => {
       applyTheme();
