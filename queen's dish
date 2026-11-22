@@ -1,0 +1,2843 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#560D21" />
+  <title>Queen's Dish — Royal Kitchen PWA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* =====================================================================
+       1. DESIGN TOKENS & VARIABEL TEMA (LIGHT & DARK MODE)
+       ===================================================================== */
+    :root {
+      --sidebar-w: 272px;
+      --burgundy-grad: linear-gradient(165deg, #6E112B 0%, #4A0A1C 58%, #2E0510 100%);
+      --gold-shiny: linear-gradient(135deg, #BF953F 0%, #FCF6BA 35%, #B38728 65%, #FBF5B7 88%, #AA771C 100%);
+      --gold-shiny-horiz: linear-gradient(90deg, transparent 0%, #BF953F 20%, #FCF6BA 50%, #BF953F 80%, transparent 100%);
+      --ivory-text: #FAF6EE;
+
+      /* Light Mode (Ivory Royal) */
+      --bg-page: #FAF6EE;
+      --bg-surface: #FFFFFF;
+      --bg-surface-alt: #F3ECE0;
+      --border-soft: #E5D9C5;
+      --text-main: #2A0812;
+      --text-muted: #6E585E;
+      --shadow-card: 0 6px 22px rgba(58, 10, 23, 0.07);
+      --accent-burgundy: #5E0E24;
+      --accent-gold-border: #D4AF37;
+      --app-zoom: 1;
+    }
+
+    body.dark-theme {
+      --bg-page: #16070C;
+      --bg-surface: #220B12;
+      --bg-surface-alt: #2D0F18;
+      --border-soft: #471A27;
+      --text-main: #FAF4EB;
+      --text-muted: #C6AEB4;
+      --shadow-card: 0 8px 26px rgba(0, 0, 0, 0.38);
+      --accent-burgundy: #8E1B3B;
+      --accent-gold-border: #D4AF37;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Teks Gold Shiny */
+    .gold-shiny-text {
+      font-family: 'Playfair Display', 'Inter', serif;
+      background: var(--gold-shiny);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 1px 12px rgba(252, 246, 186, 0.14);
+    }
+
+    /* =====================================================================
+       2. SIDEBAR DESKTOP & MOBILE DRAWER (PRESERVED CORE STYLES)
+       ===================================================================== */
+    /* Sidebar Desktop (Burgundy dengan Garis Batas Kanan Gold Shiny) */
+    #desktop-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--burgundy-grad);
+      color: var(--ivory-text);
+      border-right: 2px solid transparent;
+      border-image: var(--gold-shiny) 1;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 45;
+      box-shadow: 6px 0 28px rgba(42, 6, 16, 0.28);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    /* Drawer/Sidebar Mode pada Layar Kecil (< 768px) saat Diaktifkan */
+    @media (max-width: 767px) {
+      body.mobile-drawer-open #desktop-sidebar {
+        display: flex;
+        transform: translateX(0);
+      }
+      body:not(.mobile-drawer-open) #desktop-sidebar {
+        display: flex;
+        transform: translateX(-105%);
+      }
+    }
+
+    @media (min-width: 768px) {
+      #desktop-sidebar {
+        display: flex;
+      }
+      body.nav-hidden #desktop-sidebar {
+        transform: translateX(-100%);
+      }
+    }
+
+    #mobile-drawer-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(24, 4, 10, 0.62);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    @media (max-width: 767px) {
+      body.mobile-drawer-open #mobile-drawer-backdrop {
+        display: block;
+      }
+    }
+
+    .sidebar-brand {
+      padding: 1.15rem 1.15rem;
+      border-bottom: 1.5px solid transparent;
+      border-image: var(--gold-shiny-horiz) 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      background: rgba(34, 4, 12, 0.28);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      min-width: 0;
+    }
+
+    .crown-badge {
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: 0.75rem;
+      background: var(--gold-shiny);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 3px 12px rgba(252, 246, 186, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-icon-dark {
+      width: 2.15rem;
+      height: 2.15rem;
+      border-radius: 0.65rem;
+      background: rgba(250, 246, 238, 0.08);
+      border: 1px solid rgba(252, 246, 186, 0.28);
+      color: #FCF6BA;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.18s ease, transform 0.14s ease;
+    }
+
+    .btn-icon-dark:hover {
+      background: rgba(252, 246, 186, 0.18);
+    }
+
+    .btn-icon-dark:active {
+      transform: scale(0.95);
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .nav-btn-desktop {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.78rem 0.92rem;
+      border-radius: 0.85rem;
+      border: 1px solid transparent;
+      background: transparent;
+      color: rgba(250, 246, 238, 0.84);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn-desktop:hover {
+      background: rgba(250, 246, 238, 0.08);
+      color: #FCF6BA;
+    }
+
+    .nav-btn-desktop.active {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.24) 0%, rgba(252, 246, 186, 0.12) 100%);
+      border-color: rgba(252, 246, 186, 0.55);
+      color: #FCF6BA;
+      box-shadow: 0 4px 16px rgba(24, 3, 9, 0.35);
+    }
+
+    .sidebar-footer {
+      margin: 0.85rem;
+      padding: 0.9rem;
+      border-radius: 1rem;
+      background: rgba(30, 4, 11, 0.45);
+      border: 1.25px solid transparent;
+      background-image: linear-gradient(rgba(36, 5, 13, 0.92), rgba(36, 5, 13, 0.92)), var(--gold-shiny);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .sidebar-control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.48rem 0.6rem;
+      border-radius: 0.75rem;
+      background: rgba(250, 246, 238, 0.06);
+      border: 1px solid rgba(252, 246, 186, 0.22);
+    }
+
+    .sidebar-control-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: rgba(252, 246, 186, 0.9);
+    }
+
+    .zoom-box-dark {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(22, 3, 8, 0.6);
+      border: 1px solid rgba(252, 246, 186, 0.28);
+      border-radius: 0.55rem;
+      overflow: hidden;
+    }
+
+    .zoom-step-btn {
+      background: transparent;
+      border: none;
+      color: #FCF6BA;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.25rem 0.55rem;
+    }
+
+    .zoom-step-btn:hover {
+      background: rgba(252, 246, 186, 0.14);
+    }
+
+    .zoom-val-btn {
+      background: transparent;
+      border: none;
+      border-left: 1px solid rgba(252, 246, 186, 0.2);
+      border-right: 1px solid rgba(252, 246, 186, 0.2);
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.25rem 0.48rem;
+    }
+
+    .sidebar-theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 0.55rem;
+      background: var(--gold-shiny);
+      color: #3D0916;
+      border: 1px solid #FCF6BA;
+      font-size: 0.72rem;
+      font-weight: 800;
+      box-shadow: 0 2px 10px rgba(252, 246, 186, 0.25);
+    }
+
+    /* =====================================================================
+       3. MAIN CONTENT WRAPPER, TOPBARS & BOTTOM NAVIGATION
+       ===================================================================== */
+    .app-shell {
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    #main-content-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: margin-left 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      padding-bottom: 5.5rem;
+    }
+
+    @media (min-width: 768px) {
+      #main-content-wrapper {
+        margin-left: var(--sidebar-w);
+        padding-bottom: 2.5rem;
+      }
+      body.nav-hidden #main-content-wrapper {
+        margin-left: 0;
+      }
+    }
+
+    /* Desktop Topbar */
+    #desktop-topbar {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      #desktop-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.85rem 1.5rem;
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border-soft);
+        position: sticky;
+        top: 0;
+        z-index: 30;
+      }
+    }
+
+    /* Mobile Topbar */
+    #mobile-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.72rem 0.9rem;
+      background: var(--burgundy-grad);
+      color: var(--ivory-text);
+      border-bottom: 2px solid transparent;
+      border-image: var(--gold-shiny-horiz) 1;
+      position: sticky;
+      top: 0;
+      z-index: 32;
+      box-shadow: 0 4px 18px rgba(34, 4, 12, 0.26);
+    }
+
+    @media (min-width: 768px) {
+      #mobile-topbar {
+        display: none;
+      }
+    }
+
+    /* Mobile Bottom Navigation */
+    #mobile-bottom-nav {
+      position: fixed;
+      left: 0.75rem;
+      right: 0.75rem;
+      bottom: 0.75rem;
+      z-index: 35;
+      background: var(--burgundy-grad);
+      border: 1.5px solid #D4AF37;
+      border-radius: 1.15rem;
+      padding: 0.42rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem;
+      box-shadow: 0 12px 30px rgba(28, 3, 10, 0.42);
+      transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+    }
+
+    @media (min-width: 768px) {
+      #mobile-bottom-nav {
+        display: none;
+      }
+    }
+
+    body.nav-hidden #mobile-bottom-nav {
+      transform: translateY(135%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .nav-btn-mobile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+      padding: 0.48rem 0.35rem;
+      border-radius: 0.85rem;
+      border: 1px solid transparent;
+      background: transparent;
+      color: rgba(250, 246, 238, 0.78);
+      font-size: 0.72rem;
+      font-weight: 700;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn-mobile.active {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.28), rgba(252, 246, 186, 0.14));
+      border-color: rgba(252, 246, 186, 0.6);
+      color: #FCF6BA;
+    }
+
+    /* Indikator Visual Swipe Horizontal pada Konten Utama */
+    #swipe-edge-indicator {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 42;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.16s ease, transform 0.16s ease;
+      padding: 0.55rem 0.85rem;
+      border-radius: 999px;
+      background: var(--burgundy-grad);
+      color: #FCF6BA;
+      border: 1.5px solid #D4AF37;
+      font-size: 0.76rem;
+      font-weight: 800;
+      box-shadow: 0 10px 25px rgba(34, 4, 12, 0.45), 0 0 14px rgba(212, 175, 55, 0.32);
+    }
+    #swipe-edge-indicator.left {
+      left: 1rem;
+    }
+    #swipe-edge-indicator.right {
+      right: 1rem;
+    }
+    #swipe-edge-indicator.visible {
+      opacity: 1;
+    }
+
+    /* Tombol Floating Show Navigasi di HP saat disembunyikan */
+    #floating-show-nav-btn {
+      display: none;
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 36;
+      padding: 0.6rem 0.95rem;
+      border-radius: 999px;
+      background: var(--burgundy-grad);
+      color: #FCF6BA;
+      border: 1.5px solid #D4AF37;
+      font-size: 0.76rem;
+      font-weight: 800;
+      box-shadow: 0 8px 24px rgba(28, 3, 10, 0.45);
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    @media (max-width: 767px) {
+      body.nav-hidden #floating-show-nav-btn {
+        display: inline-flex;
+      }
+    }
+
+    /* =====================================================================
+       4. KOMPONEN UI UMUM (BUTTONS, BADGES, CARDS, STEPPERS, MODALS)
+       ===================================================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.42rem;
+      padding: 0.58rem 0.95rem;
+      border-radius: 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: transform 0.14s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--burgundy-grad);
+      color: #FCF6BA;
+      border-color: #D4AF37;
+      box-shadow: 0 4px 14px rgba(74, 10, 28, 0.24);
+    }
+
+    .btn-gold {
+      background: var(--gold-shiny);
+      color: #3D0916;
+      border-color: #FCF6BA;
+      box-shadow: 0 4px 14px rgba(191, 149, 63, 0.28);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-alt);
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .btn-danger {
+      background: rgba(225, 29, 72, 0.12);
+      color: #E11D48;
+      border-color: rgba(225, 29, 72, 0.35);
+    }
+
+    .mini-tabs-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem;
+      border-radius: 0.75rem;
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-soft);
+    }
+
+    .mini-tab-btn {
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.55rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .mini-tab-btn.active {
+      background: var(--burgundy-grad);
+      color: #FCF6BA;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .badge-rose {
+      background: #E11D48;
+      color: #FFFFFF;
+    }
+
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    body.dark-theme .badge-emerald {
+      color: #34D399;
+    }
+
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.16);
+      color: #B45309;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    body.dark-theme .badge-amber {
+      color: #FBBF24;
+    }
+
+    .badge-neutral {
+      background: var(--bg-surface-alt);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+    }
+
+    /* Zoomable Content Area */
+    #zoomable-stage {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.15rem;
+      zoom: var(--app-zoom);
+    }
+
+    @media (min-width: 768px) {
+      #zoomable-stage {
+        padding: 1.6rem 1.8rem;
+      }
+    }
+
+    .view-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .view-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .view-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Stats Strip */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 1rem;
+      padding: 0.9rem 1rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-top: 0.2rem;
+      color: var(--text-main);
+    }
+
+    /* Filter Bar */
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .input-field, .select-field {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .input-field:focus, .select-field:focus {
+      border-color: #D4AF37;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.95rem;
+    }
+
+    .royal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 1.05rem;
+      padding: 1.05rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.8rem;
+      transition: transform 0.18s ease, border-color 0.2s ease;
+    }
+
+    .royal-card:hover {
+      border-color: rgba(212, 175, 55, 0.75);
+    }
+
+    .royal-card.low-stock {
+      border-left: 4px solid #E11D48;
+    }
+
+    .royal-card.ready-recipe {
+      border-top: 3px solid #D4AF37;
+    }
+
+    /* Quantity Stepper */
+    .qty-stepper {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-soft);
+      border-radius: 0.7rem;
+      overflow: hidden;
+    }
+
+    .qty-stepper button {
+      width: 2.1rem;
+      height: 2.1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 1rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-stepper button:hover {
+      background: rgba(212, 175, 55, 0.18);
+    }
+
+    .qty-stepper span {
+      padding: 0 0.65rem;
+      font-size: 0.84rem;
+      font-weight: 800;
+      min-width: 4.5rem;
+      text-align: center;
+    }
+
+    /* Compact Log Table for Stock */
+    .log-section-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .log-title-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .log-table-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-card);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+      text-align: left;
+    }
+
+    .log-table thead {
+      background: var(--bg-surface-alt);
+      border-bottom: 1.5px solid var(--border-soft);
+    }
+
+    .log-table th {
+      padding: 0.58rem 0.75rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      white-space: nowrap;
+      vertical-align: top;
+    }
+
+    .th-filter-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .th-inline-input,
+    .th-inline-select {
+      width: 100%;
+      min-width: 105px;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      border-radius: 0.5rem;
+      padding: 0.32rem 0.5rem;
+      font-size: 0.74rem;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: normal;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .th-inline-input:focus,
+    .th-inline-select:focus {
+      border-color: #D4AF37;
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.18);
+    }
+
+    .log-note-input {
+      width: 100%;
+      min-width: 165px;
+      background: var(--bg-surface-alt);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      border-radius: 0.55rem;
+      padding: 0.34rem 0.58rem;
+      font-size: 0.78rem;
+      outline: none;
+      transition: border-color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .log-note-input:focus {
+      background: var(--bg-surface);
+      border-color: #D4AF37;
+    }
+
+    .log-table thead {
+      background: var(--bg-surface-alt);
+      border-bottom: 1.5px solid var(--border-soft);
+    }
+
+    .log-table th {
+      padding: 0.62rem 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .log-table tbody tr {
+      border-bottom: 1px solid var(--border-soft);
+      transition: background-color 0.16s ease;
+    }
+
+    .log-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .log-table tbody tr:hover {
+      background-color: rgba(212, 175, 55, 0.06);
+    }
+
+    .log-table tbody tr.low-stock-row {
+      background-color: rgba(225, 29, 72, 0.04);
+    }
+
+    .log-table td {
+      padding: 0.58rem 0.85rem;
+      font-size: 0.84rem;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .log-row-num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 800;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .log-name-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .log-inline-edit-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.18rem 0.38rem;
+      border-radius: 0.45rem;
+      text-align: left;
+      transition: border-color 0.16s ease, background-color 0.16s ease;
+    }
+
+    .log-inline-edit-btn:hover {
+      border-color: var(--border-soft);
+      background: var(--bg-surface-alt);
+    }
+
+    .qty-stepper-compact {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-soft);
+      border-radius: 0.55rem;
+      overflow: hidden;
+    }
+
+    .qty-stepper-compact button {
+      width: 1.75rem;
+      height: 1.75rem;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-stepper-compact button:hover {
+      background: rgba(212, 175, 55, 0.2);
+    }
+
+    .qty-val-trigger {
+      border: none;
+      border-left: 1px solid var(--border-soft);
+      border-right: 1px solid var(--border-soft);
+      background: transparent;
+      padding: 0.18rem 0.55rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      font-weight: 800;
+      min-width: 5.2rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .qty-val-trigger.safe {
+      color: #059669;
+    }
+
+    body.dark-theme .qty-val-trigger.safe {
+      color: #34D399;
+    }
+
+    .qty-val-trigger.low {
+      color: #E11D48;
+    }
+
+    body.dark-theme .qty-val-trigger.low {
+      color: #FB7185;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(20, 3, 8, 0.68);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1.5px solid #D4AF37;
+      border-radius: 1.2rem;
+      padding: 1.25rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-soft);
+      padding-bottom: 0.75rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.32rem;
+    }
+
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Toast Notification */
+    #royal-toast {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(-140%);
+      z-index: 80;
+      background: var(--burgundy-grad);
+      color: #FCF6BA;
+      border: 1.5px solid #D4AF37;
+      padding: 0.65rem 1.15rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: 0 10px 28px rgba(24, 3, 9, 0.45);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      text-align: center;
+      max-width: 92vw;
+    }
+
+    #royal-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="mobile-drawer-backdrop" onclick="closeMobileDrawer()" aria-hidden="true"></div>
+  <div id="swipe-edge-indicator" aria-hidden="true"></div>
+  <div id="royal-toast" role="status" aria-live="polite"></div>
+
+  <div class="app-shell">
+    <!-- ===================================================================
+         SIDEBAR DESKTOP & DRAWER MOBILE (BURGUNDY + ZOOM + TEMA + GOLD SHINY)
+         =================================================================== -->
+    <aside id="desktop-sidebar" aria-label="Sidebar Utama">
+      <div>
+        <div class="sidebar-brand">
+          <div class="brand-logo-wrap">
+            <div class="crown-badge" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#3D0916">
+                <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="gold-shiny-text" style="font-size:1.22rem;font-weight:800;line-height:1.15;">Queen's Dish</h1>
+              <span style="font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(252,246,186,0.78);">Royal Kitchen PWA</span>
+            </div>
+          </div>
+          <button onclick="handleSidebarCollapseAction()" title="Tutup / Sembunyikan Sidebar" aria-label="Tutup atau Sembunyikan Sidebar" class="btn-icon-dark">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+            </svg>
+          </button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button onclick="switchTab('stock')" data-nav="stock" class="nav-btn-desktop active">
+            <span style="display:flex;align-items:center;gap:0.65rem;">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+              </svg>
+              <span>Stock</span>
+            </span>
+            <span id="sidebar-stock-alert" class="badge badge-rose hidden">0</span>
+          </button>
+
+          <button onclick="switchTab('recipes')" data-nav="recipes" class="nav-btn-desktop">
+            <span style="display:flex;align-items:center;gap:0.65rem;">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+              <span>Makanan</span>
+            </span>
+            <span id="sidebar-ready-count" style="font-size:0.72rem;font-weight:800;opacity:0.88;">0 siap</span>
+          </button>
+
+          <button onclick="switchTab('schedule')" data-nav="schedule" class="nav-btn-desktop">
+            <span style="display:flex;align-items:center;gap:0.65rem;">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <span>Schedule</span>
+            </span>
+            <span id="sidebar-schedule-count" style="font-size:0.72rem;font-weight:800;opacity:0.88;">0 jadwal</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Kontrol Zoom & Tema Gelap/Terang di Dalam Sidebar -->
+      <div class="sidebar-footer">
+        <div class="sidebar-control-row">
+          <span class="sidebar-control-label">Zoom</span>
+          <div class="zoom-box-dark" role="group" aria-label="Pengaturan Zoom di Sidebar">
+            <button onclick="stepZoom(-10)" title="Perkecil (-10%)" aria-label="Perkecil Zoom" class="zoom-step-btn">−</button>
+            <button onclick="resetZoom()" title="Reset Zoom ke 100%" class="zoom-val-btn" style="color:#FCF6BA;"><span class="zoom-percent-text">100%</span></button>
+            <button onclick="stepZoom(10)" title="Perbesar (+10%)" aria-label="Perbesar Zoom" class="zoom-step-btn">+</button>
+          </div>
+        </div>
+
+        <div class="sidebar-control-row">
+          <span class="sidebar-control-label">Tampilan</span>
+          <button onclick="toggleTheme()" class="sidebar-theme-btn" title="Ganti Tema Gelap / Terang" aria-label="Toggle Gelap Terang">
+            <span class="theme-icon-text">🌙</span>
+            <span class="theme-label-text">Gelap</span>
+          </button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;">
+          <button onclick="exportBackupJSON()" class="btn" style="background:rgba(250,246,238,0.1);color:var(--ivory-text);border:1px solid rgba(252,246,186,0.3);padding:0.5rem;">
+            Export JSON
+          </button>
+          <button onclick="openDataModal()" class="btn btn-gold" style="padding:0.5rem;">
+            Data & Backup
+          </button>
+        </div>
+        <button id="install-pwa-btn-desktop" onclick="installPWA()" class="btn btn-gold hidden" style="width:100%;">
+          📲 Install Aplikasi
+        </button>
+      </div>
+    </aside>
+
+    <!-- ===================================================================
+         MAIN CONTENT WRAPPER (IVORY BACKGROUND)
+         =================================================================== -->
+    <div id="main-content-wrapper">
+      <!-- TOPBAR DESKTOP RINGKAS -->
+      <header id="desktop-topbar">
+        <div style="display:flex;align-items:center;gap:0.65rem;flex-wrap:wrap;">
+          <button onclick="toggleNavVisibility()" class="btn btn-secondary" title="Sembunyikan atau Tampilkan Sidebar">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <span id="desktop-nav-toggle-text">Sembunyikan Sidebar</span>
+          </button>
+
+          <span id="desktop-active-view-label" class="badge badge-neutral" style="font-size:0.75rem;padding:0.32rem 0.75rem;">Stock</span>
+
+          <!-- Tombol cepat saat sidebar ter-hide -->
+          <div id="desktop-quick-tabs" class="mini-tabs-wrap hidden">
+            <button onclick="switchTab('stock')" data-mini-nav="stock" class="mini-tab-btn active">Stock</button>
+            <button onclick="switchTab('recipes')" data-mini-nav="recipes" class="mini-tab-btn">Makanan</button>
+            <button onclick="switchTab('schedule')" data-mini-nav="schedule" class="mini-tab-btn">Schedule</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:0.55rem;">
+          <button onclick="openDataModal()" class="btn btn-secondary" title="Pengaturan Data & Backup">
+            💾 Data
+          </button>
+        </div>
+      </header>
+
+      <!-- TOPBAR MOBILE RINGKAS (BURGUNDY + DRAWER TRIGGER + LOGO GOLD SHINY) -->
+      <header id="mobile-topbar">
+        <div style="display:flex;align-items:center;gap:0.55rem;min-width:0;">
+          <button onclick="toggleMobileDrawer()" aria-label="Buka Sidebar Pengaturan" title="Buka Sidebar (Zoom, Tema & Data)" class="btn-icon-dark">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <div class="crown-badge" style="width:2.05rem;height:2.05rem;border-radius:0.65rem;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="#3D0916">
+              <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+            </svg>
+          </div>
+          <div style="min-width:0;">
+            <h1 class="gold-shiny-text" style="font-size:1.05rem;font-weight:800;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Queen's Dish</h1>
+            <span id="mobile-active-view-sub" style="font-size:0.62rem;color:rgba(252,246,186,0.78);display:block;">Stock • Usap kiri/kanan</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:0.35rem;flex-shrink:0;">
+          <!-- Hide / Show Navigasi Bawah Mobile -->
+          <button onclick="toggleNavVisibility()" aria-label="Sembunyikan atau Tampilkan Navigasi" title="Hide/Show Navigasi" class="btn-icon-dark">
+            <svg id="mobile-nav-arrow-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+
+          <!-- Data & Backup -->
+          <button onclick="openDataModal()" aria-label="Pengaturan & Backup Data" title="Data & Backup" class="btn-icon-dark">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Hidden File Input untuk Import JSON -->
+      <input type="file" id="import-json-input" accept=".json,application/json" class="hidden" onchange="handleImportJSON(event)" />
+
+      <!-- =================================================================
+           KONTEN UTAMA (3 VIEW TABS)
+           ================================================================= -->
+      <main id="zoomable-stage">
+        <!-- VIEW 1: STOCK BAHAN DAPUR -->
+        <section id="view-stock">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Inventaris Stock Dapur</h2>
+              <p class="view-subtitle">Log ketersediaan bahan masak ringkas dengan filter langsung di judul kolom.</p>
+            </div>
+            <button onclick="openAddStockModal()" class="btn btn-primary">
+              + Tambah Bahan
+            </button>
+          </div>
+
+          <div class="log-section-bar">
+            <div class="log-title-group">
+              <svg width="17" height="17" fill="none" stroke="#10B981" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <span id="stock-log-header-count">Daftar Bahan (0)</span>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:0.45rem;">
+              <button type="button" id="stock-reset-filter-btn" onclick="resetStockFilter()" class="btn btn-secondary hidden" style="padding:0.42rem 0.72rem;font-size:0.75rem;">
+                Reset Filter
+              </button>
+              <button type="button" onclick="confirmClearAllStock()" class="btn btn-danger" style="padding:0.42rem 0.72rem;font-size:0.75rem;">
+                🗑 Hapus Semua
+              </button>
+            </div>
+          </div>
+
+          <div class="log-table-card" id="stock-list-container">
+            <table class="log-table" aria-label="Tabel Log Daftar Bahan">
+              <thead>
+                <tr>
+                  <th style="width:46px;">#</th>
+                  <th style="min-width:175px;">
+                    <div class="th-filter-stack">
+                      <span>Nama Bahan</span>
+                      <input type="text" id="th-filter-name" class="th-inline-input" placeholder="Cari nama..." oninput="renderStockRows()" />
+                    </div>
+                  </th>
+                  <th style="min-width:145px;">
+                    <div class="th-filter-stack">
+                      <span>Kategori</span>
+                      <select id="th-filter-category" class="th-inline-select" onchange="renderStockRows()">
+                        <option value="all">Semua Kategori</option>
+                      </select>
+                    </div>
+                  </th>
+                  <th style="min-width:165px;">
+                    <div class="th-filter-stack">
+                      <span>Jumlah Stok</span>
+                      <select id="th-filter-qty" class="th-inline-select" onchange="renderStockRows()">
+                        <option value="all">Semua Stok</option>
+                        <option value="low">Perlu Belanja (≤Min)</option>
+                        <option value="safe">Stok Aman</option>
+                        <option value="desc">Urut Terbanyak</option>
+                        <option value="asc">Urut Tersedikit</option>
+                      </select>
+                    </div>
+                  </th>
+                  <th style="min-width:115px;">Status</th>
+                  <th style="min-width:190px;">
+                    <div class="th-filter-stack">
+                      <span>Keterangan</span>
+                      <input type="text" id="th-filter-notes" class="th-inline-input" placeholder="Cari keterangan..." oninput="renderStockRows()" />
+                    </div>
+                  </th>
+                  <th style="text-align:right;width:82px;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="stock-table-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- VIEW 2: MAKANAN / RESEP -->
+        <section id="view-recipes" class="hidden">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Koleksi Makanan & Resep</h2>
+              <p class="view-subtitle">Otomatis mencocokkan resep dengan stok bahan di dapur Anda.</p>
+            </div>
+            <button onclick="openAddRecipeModal()" class="btn btn-primary">
+              + Tambah Resep
+            </button>
+          </div>
+
+          <div class="stats-grid" id="recipes-stats-grid"></div>
+
+          <div class="toolbar-row">
+            <input type="text" id="recipe-search-input" class="input-field" style="flex:1;min-width:200px;" placeholder="Cari nama hidangan..." oninput="renderRecipesView()" />
+            <select id="recipe-filter-select" class="select-field" onchange="renderRecipesView()">
+              <option value="all">Semua Menu</option>
+              <option value="ready">Siap Dimasak (Bahan Lengkap)</option>
+              <option value="missing">Bahan Belum Lengkap</option>
+            </select>
+          </div>
+
+          <div class="cards-grid" id="recipes-list-container"></div>
+        </section>
+
+        <!-- VIEW 3: SCHEDULE MASAK -->
+        <section id="view-schedule" class="hidden">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Schedule Menu Royal Kitchen</h2>
+              <p class="view-subtitle">Rencanakan jadwal sarapan, makan siang, dan makan malam keluarga.</p>
+            </div>
+            <button onclick="openAddScheduleModal()" class="btn btn-primary">
+              + Jadwalkan Menu
+            </button>
+          </div>
+
+          <div class="stats-grid" id="schedule-stats-grid"></div>
+
+          <div class="cards-grid" id="schedule-list-container"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV MOBILE -->
+  <nav id="mobile-bottom-nav" aria-label="Navigasi Utama Mobile">
+    <button onclick="switchTab('stock')" data-nav="stock" class="nav-btn-mobile active">
+      <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+      </svg>
+      <span>Stock</span>
+    </button>
+    <button onclick="switchTab('recipes')" data-nav="recipes" class="nav-btn-mobile">
+      <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      <span>Makanan</span>
+    </button>
+    <button onclick="switchTab('schedule')" data-nav="schedule" class="nav-btn-mobile">
+      <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      <span>Schedule</span>
+    </button>
+  </nav>
+
+  <!-- FLOATING SHOW NAV BUTTON ON MOBILE -->
+  <button id="floating-show-nav-btn" onclick="toggleNavVisibility()" aria-label="Tampilkan Navigasi">
+    ▲ Menu
+  </button>
+
+  <!-- ===================================================================
+       MODAL 1: TAMBAH / EDIT STOCK
+       =================================================================== -->
+  <div id="modal-stock" class="modal-backdrop hidden" onclick="if(event.target===this) closeModal('modal-stock')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-stock-title" style="font-size:1.05rem;font-weight:800;">Tambah Bahan ke Stock</h3>
+        <button onclick="closeModal('modal-stock')" class="btn btn-secondary" style="padding:0.35rem 0.65rem;">✕</button>
+      </div>
+      <form onsubmit="handleSaveStock(event)" style="display:flex;flex-direction:column;gap:0.75rem;">
+        <input type="hidden" id="stock-edit-id-input" value="" />
+        <div class="form-group">
+          <label class="form-label">Nama Bahan</label>
+          <input type="text" id="stock-name-input" class="input-field" required placeholder="Contoh: Beras Pandan Wangi" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;">
+          <div class="form-group">
+            <label class="form-label">Kategori</label>
+            <select id="stock-cat-input" class="select-field">
+              <option value="Bahan Pokok">Bahan Pokok</option>
+              <option value="Protein">Protein</option>
+              <option value="Sayur & Buah">Sayur & Buah</option>
+              <option value="Bumbu & Saus">Bumbu & Saus</option>
+              <option value="Dairy & Minuman">Dairy & Minuman</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Satuan</label>
+            <select id="stock-unit-input" class="select-field">
+              <option value="gram">gram</option>
+              <option value="ml">ml</option>
+              <option value="pcs">pcs</option>
+              <option value="sdm">sdm</option>
+              <option value="bungkus">bungkus</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;">
+          <div class="form-group">
+            <label class="form-label">Jumlah Saat Ini</label>
+            <input type="number" id="stock-qty-input" class="input-field" min="0" step="any" required value="500" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Batas Minimum Alert</label>
+            <input type="number" id="stock-min-input" class="input-field" min="0" step="any" required value="100" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Keterangan (Opsional)</label>
+          <input type="text" id="stock-notes-input" class="input-field" placeholder="Contoh: Simpan di wadah kedap udara" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:0.35rem;padding:0.78rem;">Simpan Bahan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL KONFIRMASI HAPUS SEMUA STOCK
+       =================================================================== -->
+  <div id="modal-confirm-clear-stock" class="modal-backdrop hidden" onclick="if(event.target===this) closeModal('modal-confirm-clear-stock')">
+    <div class="modal-card" style="max-width:400px;">
+      <div class="modal-header">
+        <h3 style="font-size:1.02rem;font-weight:800;">Hapus Semua Bahan Stock?</h3>
+        <button onclick="closeModal('modal-confirm-clear-stock')" class="btn btn-secondary" style="padding:0.3rem 0.6rem;">✕</button>
+      </div>
+      <p style="font-size:0.84rem;color:var(--text-muted);line-height:1.5;">
+        Seluruh daftar bahan pada tabel log Stock akan dikosongkan. Tindakan ini tidak dapat dibatalkan kecuali Anda memiliki file backup JSON.
+      </p>
+      <div style="display:flex;gap:0.55rem;justify-content:flex-end;margin-top:0.3rem;">
+        <button type="button" onclick="closeModal('modal-confirm-clear-stock')" class="btn btn-secondary">Batal</button>
+        <button type="button" onclick="executeClearAllStock()" class="btn btn-danger">Ya, Hapus Semua</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 2: TAMBAH RESEP MAKANAN
+       =================================================================== -->
+  <div id="modal-recipe" class="modal-backdrop hidden" onclick="if(event.target===this) closeModal('modal-recipe')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:1.05rem;font-weight:800;">Tambah Resep Makanan</h3>
+        <button onclick="closeModal('modal-recipe')" class="btn btn-secondary" style="padding:0.35rem 0.65rem;">✕</button>
+      </div>
+      <form onsubmit="handleSaveRecipe(event)" style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div class="form-group">
+          <label class="form-label">Nama Hidangan</label>
+          <input type="text" id="recipe-name-input" class="input-field" required placeholder="Contoh: Ayam Panggang Madu Royal" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;">
+          <div class="form-group">
+            <label class="form-label">Kategori Waktu</label>
+            <select id="recipe-tag-input" class="select-field">
+              <option value="Hidangan Utama">Hidangan Utama</option>
+              <option value="Sarapan">Sarapan</option>
+              <option value="Sup & Kuah">Sup & Kuah</option>
+              <option value="Dessert">Dessert</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimasi Masak (Menit)</label>
+            <input type="number" id="recipe-time-input" class="input-field" min="5" value="25" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <label class="form-label">Bahan yang Dibutuhkan</label>
+            <button type="button" onclick="appendRecipeIngredientRow()" class="btn btn-secondary" style="padding:0.25rem 0.55rem;font-size:0.72rem;">+ Baris Bahan</button>
+          </div>
+          <div id="recipe-ingredients-builder" style="display:flex;flex-direction:column;gap:0.45rem;margin-top:0.25rem;"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:0.35rem;padding:0.78rem;">Simpan Resep</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 3: TAMBAH JADWAL MASAK
+       =================================================================== -->
+  <div id="modal-schedule" class="modal-backdrop hidden" onclick="if(event.target===this) closeModal('modal-schedule')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:1.05rem;font-weight:800;">Jadwalkan Menu Masak</h3>
+        <button onclick="closeModal('modal-schedule')" class="btn btn-secondary" style="padding:0.35rem 0.65rem;">✕</button>
+      </div>
+      <form onsubmit="handleSaveSchedule(event)" style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div class="form-group">
+          <label class="form-label">Tanggal</label>
+          <input type="date" id="schedule-date-input" class="input-field" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Waktu Makan</label>
+          <select id="schedule-meal-input" class="select-field">
+            <option value="Sarapan">Sarapan</option>
+            <option value="Makan Siang">Makan Siang</option>
+            <option value="Makan Malam">Makan Malam</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pilih Menu Makanan</label>
+          <select id="schedule-recipe-input" class="select-field" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Catatan (Opsional)</label>
+          <input type="text" id="schedule-note-input" class="input-field" placeholder="Contoh: Porsi 4 orang, pedas sedang" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:0.35rem;padding:0.78rem;">Simpan Jadwal</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MODAL 4: DATA & BACKUP
+       =================================================================== -->
+  <div id="modal-data" class="modal-backdrop hidden" onclick="if(event.target===this) closeModal('modal-data')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:1.05rem;font-weight:800;">Data & Backup Lokal</h3>
+        <button onclick="closeModal('modal-data')" class="btn btn-secondary" style="padding:0.35rem 0.65rem;">✕</button>
+      </div>
+
+      <div style="padding:0.85rem;border-radius:0.9rem;background:var(--bg-surface-alt);border:1px solid var(--border-soft);font-size:0.8rem;color:var(--text-muted);">
+        <strong style="color:var(--text-main);display:block;margin-bottom:0.2rem;">100% Penyimpanan Lokal (No Internet)</strong>
+        Semua data Stock, Makanan, Schedule, Zoom, dan Tema tersimpan di perangkat Anda. Gunakan Export JSON untuk mencadangkan data kapan saja.
+      </div>
+
+      <button onclick="exportBackupJSON(); closeModal('modal-data')" class="btn btn-primary" style="width:100%;padding:0.85rem;">
+        📤 Export Backup (.JSON)
+      </button>
+
+      <button onclick="document.getElementById('import-json-input').click()" class="btn btn-gold" style="width:100%;padding:0.85rem;">
+        📥 Import File Backup (.JSON)
+      </button>
+
+      <button onclick="resetDemoData()" class="btn btn-danger" style="width:100%;padding:0.75rem;">
+        🔄 Reset ke Data Awal Demo
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================================
+       1. KONSTANTA STORAGE & DATA DEFAULT ROYAL KITCHEN
+       ===================================================================== */
+    const STORAGE_KEY = "queens_dish_data_v1";
+    const NAV_HIDDEN_KEY = "queens_dish_nav_hidden";
+    const THEME_KEY = "queens_dish_theme";
+    const ZOOM_KEY = "queens_dish_zoom";
+
+    const DEFAULT_STATE = {
+      stock: [
+        { id: "stk-1", name: "Beras Pandan Wangi", category: "Bahan Pokok", qty: 2500, minQty: 500, unit: "gram", notes: "Simpan di wadah kedap udara" },
+        { id: "stk-2", name: "Dada Ayam Fillet", category: "Protein", qty: 800, minQty: 300, unit: "gram", notes: "Simpan di freezer bagian atas" },
+        { id: "stk-3", name: "Telur Ayam Kampung", category: "Protein", qty: 10, minQty: 4, unit: "pcs", notes: "Rak pintu kulkas" },
+        { id: "stk-4", name: "Bawang Putih", category: "Bumbu & Saus", qty: 180, minQty: 50, unit: "gram", notes: "Keranjang bumbu kering" },
+        { id: "stk-5", name: "Minyak Zaitun / Goreng", category: "Bumbu & Saus", qty: 600, minQty: 150, unit: "ml", notes: "Jauhkan dari sinar matahari" },
+        { id: "stk-6", name: "Kecap Manis Royal", category: "Bumbu & Saus", qty: 12, minQty: 5, unit: "sdm", notes: "Botol kaca rak tengah" },
+        { id: "stk-7", name: "Santan Kental", category: "Dairy & Minuman", qty: 1, minQty: 2, unit: "bungkus", notes: "Segera restock akhir pekan" },
+        { id: "stk-8", name: "Wortel Organik", category: "Sayur & Buah", qty: 250, minQty: 100, unit: "gram", notes: "Simpan di chiller sayur" }
+      ],
+      recipes: [
+        {
+          id: "rec-1",
+          name: "Nasi Goreng Kerajaan",
+          tag: "Hidangan Utama",
+          prepMinutes: 20,
+          ingredients: [
+            { stockId: "stk-1", amount: 300 },
+            { stockId: "stk-3", amount: 2 },
+            { stockId: "stk-4", amount: 20 },
+            { stockId: "stk-6", amount: 3 },
+            { stockId: "stk-5", amount: 30 }
+          ]
+        },
+        {
+          id: "rec-2",
+          name: "Ayam Tumis Bawang Putih & Wortel",
+          tag: "Hidangan Utama",
+          prepMinutes: 25,
+          ingredients: [
+            { stockId: "stk-2", amount: 350 },
+            { stockId: "stk-4", amount: 25 },
+            { stockId: "stk-8", amount: 120 },
+            { stockId: "stk-5", amount: 25 }
+          ]
+        },
+        {
+          id: "rec-3",
+          name: "Opor Ayam Santan Klasik",
+          tag: "Hidangan Utama",
+          prepMinutes: 40,
+          ingredients: [
+            { stockId: "stk-2", amount: 500 },
+            { stockId: "stk-7", amount: 2 },
+            { stockId: "stk-4", amount: 30 }
+          ]
+        },
+        {
+          id: "rec-4",
+          name: "Telur Dadar Golden Royal",
+          tag: "Sarapan",
+          prepMinutes: 10,
+          ingredients: [
+            { stockId: "stk-3", amount: 3 },
+            { stockId: "stk-5", amount: 20 }
+          ]
+        }
+      ],
+      schedule: [
+        {
+          id: "sch-1",
+          date: new Date().toISOString().split("T")[0],
+          meal: "Sarapan",
+          recipeId: "rec-4",
+          note: "Sajikan hangat dengan teh melati",
+          done: false
+        },
+        {
+          id: "sch-2",
+          date: new Date().toISOString().split("T")[0],
+          meal: "Makan Malam",
+          recipeId: "rec-1",
+          note: "Porsi keluarga (3 piring)",
+          done: false
+        }
+      ]
+    };
+
+    function loadAppState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.stock) && Array.isArray(parsed.recipes) && Array.isArray(parsed.schedule)) {
+            parsed.stock = parsed.stock.map((item) => ({
+              ...item,
+              notes: typeof item.notes === "string" ? item.notes : ""
+            }));
+            return parsed;
+          }
+        }
+      } catch (e) {}
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+
+    let appState = loadAppState();
+    let currentTab = "stock";
+    let deferredPrompt = null;
+
+    function saveAppState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {}
+      updateSidebarCounters();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("royal-toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    /* =====================================================================
+       2. TEMA GELAP/TERANG, ZOOM & NAV VISIBILITY
+       ===================================================================== */
+    let isNavHidden = localStorage.getItem(NAV_HIDDEN_KEY) === "true";
+    let isMobileDrawerOpen = false;
+
+    let currentTheme = (() => {
+      try {
+        return localStorage.getItem(THEME_KEY) || "light";
+      } catch (e) {
+        return "light";
+      }
+    })();
+
+    let currentZoom = (() => {
+      try {
+        const z = parseInt(localStorage.getItem(ZOOM_KEY), 10);
+        return !isNaN(z) && z >= 70 && z <= 140 ? z : 100;
+      } catch (e) {
+        return 100;
+      }
+    })();
+
+    function applyTheme() {
+      const isDark = currentTheme === "dark";
+      document.body.classList.toggle("dark-theme", isDark);
+      document.querySelectorAll(".theme-icon-text").forEach((el) => {
+        el.textContent = isDark ? "☀️" : "🌙";
+      });
+      document.querySelectorAll(".theme-label-text").forEach((el) => {
+        el.textContent = isDark ? "Terang" : "Gelap";
+      });
+    }
+
+    function toggleTheme() {
+      currentTheme = currentTheme === "dark" ? "light" : "dark";
+      try {
+        localStorage.setItem(THEME_KEY, currentTheme);
+      } catch (e) {}
+      applyTheme();
+    }
+
+    function applyZoom() {
+      document.documentElement.style.setProperty("--app-zoom", (currentZoom / 100).toFixed(2));
+      document.querySelectorAll(".zoom-percent-text").forEach((el) => {
+        el.textContent = `${currentZoom}%`;
+      });
+    }
+
+    function stepZoom(delta) {
+      currentZoom = Math.min(140, Math.max(70, currentZoom + delta));
+      try {
+        localStorage.setItem(ZOOM_KEY, String(currentZoom));
+      } catch (e) {}
+      applyZoom();
+    }
+
+    function resetZoom() {
+      currentZoom = 100;
+      try {
+        localStorage.setItem(ZOOM_KEY, "100");
+      } catch (e) {}
+      applyZoom();
+      showToast("Zoom direset ke 100%");
+    }
+
+    function applyNavVisibility() {
+      document.body.classList.toggle("nav-hidden", isNavHidden);
+
+      const desktopText = document.getElementById("desktop-nav-toggle-text");
+      const quickTabs = document.getElementById("desktop-quick-tabs");
+      const mobileArrow = document.getElementById("mobile-nav-arrow-icon");
+
+      if (desktopText) {
+        desktopText.textContent = isNavHidden ? "Tampilkan Sidebar" : "Sembunyikan Sidebar";
+      }
+      if (quickTabs) {
+        quickTabs.classList.toggle("hidden", !isNavHidden);
+      }
+      if (mobileArrow) {
+        mobileArrow.innerHTML = isNavHidden
+          ? '<path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>'
+          : '<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>';
+      }
+    }
+
+    function toggleNavVisibility() {
+      isNavHidden = !isNavHidden;
+      try {
+        localStorage.setItem(NAV_HIDDEN_KEY, String(isNavHidden));
+      } catch (e) {}
+      applyNavVisibility();
+    }
+
+    function setMobileDrawer(open) {
+      isMobileDrawerOpen = Boolean(open);
+      document.body.classList.toggle("mobile-drawer-open", isMobileDrawerOpen);
+    }
+
+    function toggleMobileDrawer() {
+      setMobileDrawer(!isMobileDrawerOpen);
+    }
+
+    function closeMobileDrawer() {
+      setMobileDrawer(false);
+    }
+
+    function handleSidebarCollapseAction() {
+      if (window.innerWidth < 768) {
+        closeMobileDrawer();
+      } else {
+        toggleNavVisibility();
+      }
+    }
+
+    /* =====================================================================
+       3. MODALS & DATA BACKUP
+       ===================================================================== */
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("hidden");
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    }
+
+    function openDataModal() {
+      closeMobileDrawer();
+      openModal("modal-data");
+    }
+
+    function exportBackupJSON() {
+      const payload = {
+        app: "Queen's Dish - Royal Kitchen PWA",
+        exportedAt: new Date().toISOString(),
+        data: appState
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `queens-dish-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Backup JSON berhasil diunduh");
+    }
+
+    function handleImportJSON(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const imported = parsed.data ? parsed.data : parsed;
+          if (Array.isArray(imported.stock) && Array.isArray(imported.recipes) && Array.isArray(imported.schedule)) {
+            imported.stock = imported.stock.map((item) => ({
+              ...item,
+              notes: typeof item.notes === "string" ? item.notes : ""
+            }));
+            appState = imported;
+            saveAppState();
+            renderAllViews();
+            closeModal("modal-data");
+            showToast("Data backup berhasil dipulihkan!");
+          } else {
+            showToast("Format file JSON tidak valid.");
+          }
+        } catch (err) {
+          showToast("Gagal membaca file JSON.");
+        }
+        event.target.value = "";
+      };
+      reader.readAsText(file);
+    }
+
+    function resetDemoData() {
+      appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      saveAppState();
+      renderAllViews();
+      closeModal("modal-data");
+      showToast("Data dikembalikan ke contoh awal");
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById("install-pwa-btn-desktop");
+      if (btn) btn.classList.remove("hidden");
+    });
+
+    async function installPWA() {
+      if (!deferredPrompt) {
+        showToast("Gunakan menu browser 'Add to Home Screen' untuk install");
+        return;
+      }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    }
+
+    /* =====================================================================
+       4. NAVIGASI TAB, SWIPE GESTURE & UTILITAS UMUM
+       ===================================================================== */
+    const TAB_ORDER = ["stock", "recipes", "schedule"];
+    const TAB_LABELS = { stock: "Stock", recipes: "Makanan", schedule: "Schedule" };
+
+    function switchTab(tabName) {
+      if (!TAB_ORDER.includes(tabName)) return;
+      currentTab = tabName;
+      ["stock", "recipes", "schedule"].forEach((t) => {
+        const viewEl = document.getElementById(`view-${t}`);
+        if (viewEl) {
+          viewEl.classList.toggle("hidden", t !== tabName);
+        }
+      });
+
+      document.querySelectorAll("[data-nav]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-nav") === tabName);
+      });
+
+      document.querySelectorAll("[data-mini-nav]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-mini-nav") === tabName);
+      });
+
+      const activeLabelEl = document.getElementById("desktop-active-view-label");
+      if (activeLabelEl) activeLabelEl.textContent = TAB_LABELS[tabName];
+
+      const mobileSubEl = document.getElementById("mobile-active-view-sub");
+      if (mobileSubEl) mobileSubEl.textContent = `${TAB_LABELS[tabName]} • Usap kiri/kanan`;
+
+      if (window.innerWidth < 768) {
+        closeMobileDrawer();
+      }
+
+      if (tabName === "stock") renderStockView();
+      if (tabName === "recipes") renderRecipesView();
+      if (tabName === "schedule") renderScheduleView();
+    }
+
+    (function setupSwipeNavigation() {
+      const mainWrapper = document.getElementById("main-content-wrapper");
+      const bottomNav = document.getElementById("mobile-bottom-nav");
+      const indicator = document.getElementById("swipe-edge-indicator");
+      if (!mainWrapper) return;
+
+      let startX = 0;
+      let startY = 0;
+      let trackingMainSwipe = false;
+      let hideIndicatorTimer = null;
+
+      function showSwipeHint(dir, targetLabel) {
+        if (!indicator) return;
+        indicator.textContent = dir === "next" ? `→ ${targetLabel}` : `← ${targetLabel}`;
+        indicator.classList.remove("left", "right");
+        indicator.classList.add(dir === "next" ? "right" : "left", "visible");
+        clearTimeout(hideIndicatorTimer);
+        hideIndicatorTimer = setTimeout(() => {
+          indicator.classList.remove("visible");
+        }, 380);
+      }
+
+      function isInteractiveTarget(el) {
+        return Boolean(
+          el &&
+          el.closest("input, select, textarea, button, .qty-stepper, .modal-backdrop, #desktop-sidebar")
+        );
+      }
+
+      mainWrapper.addEventListener(
+        "touchstart",
+        (e) => {
+          if (e.touches.length !== 1 || isInteractiveTarget(e.target)) {
+            trackingMainSwipe = false;
+            return;
+          }
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          trackingMainSwipe = true;
+        },
+        { passive: true }
+      );
+
+      mainWrapper.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!trackingMainSwipe || e.touches.length !== 1) return;
+          const dx = e.touches[0].clientX - startX;
+          const dy = e.touches[0].clientY - startY;
+          if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy) * 1.45) {
+            const idx = TAB_ORDER.indexOf(currentTab);
+            if (dx < 0 && idx < TAB_ORDER.length - 1) {
+              showSwipeHint("next", TAB_LABELS[TAB_ORDER[idx + 1]]);
+            } else if (dx > 0 && idx > 0) {
+              showSwipeHint("prev", TAB_LABELS[TAB_ORDER[idx - 1]]);
+            }
+          }
+        },
+        { passive: true }
+      );
+
+      mainWrapper.addEventListener(
+        "touchend",
+        (e) => {
+          if (!trackingMainSwipe || !e.changedTouches.length) return;
+          trackingMainSwipe = false;
+          const endX = e.changedTouches[0].clientX;
+          const endY = e.changedTouches[0].clientY;
+          const dx = endX - startX;
+          const dy = endY - startY;
+
+          // Buka drawer bila mengusap dari tepi kiri layar di HP saat drawer tertutup
+          if (window.innerWidth < 768 && !isMobileDrawerOpen && startX < 26 && dx > 68 && Math.abs(dy) < 60) {
+            setMobileDrawer(true);
+            return;
+          }
+
+          if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            const idx = TAB_ORDER.indexOf(currentTab);
+            if (dx < 0 && idx < TAB_ORDER.length - 1) {
+              switchTab(TAB_ORDER[idx + 1]);
+            } else if (dx > 0 && idx > 0) {
+              switchTab(TAB_ORDER[idx - 1]);
+            }
+          }
+        },
+        { passive: true }
+      );
+
+      if (bottomNav) {
+        let navStartY = 0;
+        bottomNav.addEventListener(
+          "touchstart",
+          (e) => {
+            if (e.touches.length === 1) navStartY = e.touches[0].clientY;
+          },
+          { passive: true }
+        );
+        bottomNav.addEventListener(
+          "touchend",
+          (e) => {
+            if (!e.changedTouches.length) return;
+            const dy = e.changedTouches[0].clientY - navStartY;
+            if (dy > 32 && !isNavHidden) {
+              toggleNavVisibility();
+            }
+          },
+          { passive: true }
+        );
+      }
+
+      // Usap ke atas dari bagian bawah layar untuk menampilkan kembali navigasi saat tersembunyi
+      let edgeUpStartY = 0;
+      let edgeUpStartX = 0;
+      document.addEventListener(
+        "touchstart",
+        (e) => {
+          if (!isNavHidden || e.touches.length !== 1) return;
+          const y = e.touches[0].clientY;
+          if (window.innerHeight - y < 48) {
+            edgeUpStartY = y;
+            edgeUpStartX = e.touches[0].clientX;
+          } else {
+            edgeUpStartY = 0;
+          }
+        },
+        { passive: true }
+      );
+      document.addEventListener(
+        "touchend",
+        (e) => {
+          if (!edgeUpStartY || !e.changedTouches.length) return;
+          const dy = edgeUpStartY - e.changedTouches[0].clientY;
+          const dx = Math.abs(e.changedTouches[0].clientX - edgeUpStartX);
+          edgeUpStartY = 0;
+          if (dy > 38 && dx < 60 && isNavHidden) {
+            toggleNavVisibility();
+          }
+        },
+        { passive: true }
+      );
+    })();
+
+    /* =====================================================================
+       5. LOGIKA VIEW 1: STOCK BAHAN DAPUR
+       ===================================================================== */
+    function getStockStep(unit) {
+      if (unit === "gram" || unit === "ml") return 50;
+      return 1;
+    }
+
+    function adjustStockQty(stockId, direction) {
+      const item = appState.stock.find((s) => s.id === stockId);
+      if (!item) return;
+      const step = getStockStep(item.unit) * direction;
+      item.qty = Math.max(0, Number((item.qty + step).toFixed(2)));
+      saveAppState();
+      renderStockView();
+    }
+
+    function deleteStockItem(stockId) {
+      appState.stock = appState.stock.filter((s) => s.id !== stockId);
+      saveAppState();
+      renderStockView();
+      showToast("Bahan dihapus dari stock");
+    }
+
+    function confirmClearAllStock() {
+      if (!appState.stock.length) {
+        showToast("Daftar bahan sudah kosong");
+        return;
+      }
+      openModal("modal-confirm-clear-stock");
+    }
+
+    function executeClearAllStock() {
+      appState.stock = [];
+      saveAppState();
+      closeModal("modal-confirm-clear-stock");
+      renderStockView();
+      showToast("Semua daftar bahan berhasil dihapus");
+    }
+
+    function resetStockFilter() {
+      const searchEl = document.getElementById("stock-search-input");
+      const filterEl = document.getElementById("stock-filter-select");
+      if (searchEl) searchEl.value = "";
+      if (filterEl) filterEl.value = "all";
+      renderStockView();
+    }
+
+    function openAddStockModal() {
+      document.getElementById("modal-stock-title").textContent = "Tambah Bahan ke Stock";
+      document.getElementById("stock-edit-id-input").value = "";
+      document.getElementById("stock-name-input").value = "";
+      document.getElementById("stock-cat-input").value = "Bahan Pokok";
+      document.getElementById("stock-unit-input").value = "gram";
+      document.getElementById("stock-qty-input").value = "500";
+      document.getElementById("stock-min-input").value = "100";
+      openModal("modal-stock");
+    }
+
+    function openEditStockModal(stockId) {
+      const item = appState.stock.find((s) => s.id === stockId);
+      if (!item) return;
+      document.getElementById("modal-stock-title").textContent = "Edit Bahan Stock";
+      document.getElementById("stock-edit-id-input").value = item.id;
+      document.getElementById("stock-name-input").value = item.name;
+      document.getElementById("stock-cat-input").value = item.category;
+      document.getElementById("stock-unit-input").value = item.unit;
+      document.getElementById("stock-qty-input").value = String(item.qty);
+      document.getElementById("stock-min-input").value = String(item.minQty);
+      openModal("modal-stock");
+    }
+
+    function handleSaveStock(e) {
+      e.preventDefault();
+      const editId = document.getElementById("stock-edit-id-input").value;
+      const name = document.getElementById("stock-name-input").value.trim();
+      const category = document.getElementById("stock-cat-input").value;
+      const unit = document.getElementById("stock-unit-input").value;
+      const qty = parseFloat(document.getElementById("stock-qty-input").value) || 0;
+      const minQty = parseFloat(document.getElementById("stock-min-input").value) || 0;
+
+      if (!name) return;
+
+      if (editId) {
+        const existing = appState.stock.find((s) => s.id === editId);
+        if (existing) {
+          existing.name = name;
+          existing.category = category;
+          existing.unit = unit;
+          existing.qty = qty;
+          existing.minQty = minQty;
+        }
+        saveAppState();
+        closeModal("modal-stock");
+        renderStockView();
+        showToast(`${name} diperbarui`);
+        return;
+      }
+
+      appState.stock.unshift({
+        id: "stk-" + Date.now(),
+        name,
+        category,
+        unit,
+        qty,
+        minQty
+      });
+      saveAppState();
+      closeModal("modal-stock");
+      renderStockView();
+      showToast(`${name} ditambahkan ke stock`);
+    }
+
+    function renderStockView() {
+      const query = (document.getElementById("stock-search-input")?.value || "").toLowerCase();
+      const filter = document.getElementById("stock-filter-select")?.value || "all";
+
+      const resetFilterBtn = document.getElementById("stock-reset-filter-btn");
+      if (resetFilterBtn) {
+        resetFilterBtn.classList.toggle("hidden", !query && filter === "all");
+      }
+
+      const filtered = appState.stock.filter((item) => {
+        const matchesQuery =
+          item.name.toLowerCase().includes(query) || item.category.toLowerCase().includes(query);
+        const isLow = item.qty <= item.minQty;
+        if (filter === "low") return matchesQuery && isLow;
+        if (filter === "safe") return matchesQuery && !isLow;
+        return matchesQuery;
+      });
+
+      const headerCountEl = document.getElementById("stock-log-header-count");
+      if (headerCountEl) {
+        headerCountEl.textContent = `Daftar Bahan (${filtered.length})`;
+      }
+
+      const container = document.getElementById("stock-list-container");
+      if (!container) return;
+
+      if (!filtered.length) {
+        container.innerHTML = `<div style="text-align:center;padding:1.75rem 1rem;color:var(--text-muted);font-size:0.84rem;">Tidak ada bahan dapur yang sesuai filter.</div>`;
+        return;
+      }
+
+      const rowsHtml = filtered
+        .map((item, idx) => {
+          const isLow = item.qty <= item.minQty;
+          return `
+            <tr class="${isLow ? "low-stock-row" : ""}">
+              <td class="log-row-num">#${idx + 1}</td>
+              <td>
+                <div class="log-name-cell">
+                  <button type="button" onclick="openEditStockModal('${item.id}')" class="log-inline-edit-btn" title="Klik untuk ubah detail bahan">
+                    ${escapeHtml(item.name)}
+                  </button>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge-neutral">${escapeHtml(item.category)}</span>
+              </td>
+              <td>
+                <div class="qty-stepper-compact">
+                  <button type="button" onclick="adjustStockQty('${item.id}', -1)" aria-label="Kurangi">−</button>
+                  <button type="button" onclick="openEditStockModal('${item.id}')" class="qty-val-trigger ${isLow ? "low" : "safe"}" title="Klik untuk edit angka langsung">
+                    ${item.qty} ${escapeHtml(item.unit)}
+                  </button>
+                  <button type="button" onclick="adjustStockQty('${item.id}', 1)" aria-label="Tambah">+</button>
+                </div>
+              </td>
+              <td>
+                ${
+                  isLow
+                    ? `<span class="badge badge-rose">Menipis (≤${item.minQty})</span>`
+                    : `<span class="badge badge-emerald">Aman</span>`
+                }
+              </td>
+              <td style="text-align:right;">
+                <button type="button" onclick="deleteStockItem('${item.id}')" class="btn btn-danger" style="padding:0.32rem 0.6rem;font-size:0.74rem;" title="Hapus Bahan">
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function updateStockNotes(stockId, newNote) {
+      const item = appState.stock.find((s) => s.id === stockId);
+      if (!item) return;
+      item.notes = String(newNote || "");
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {}
+    }
+
+    function resetStockFilter() {
+      const nameEl = document.getElementById("th-filter-name");
+      const catEl = document.getElementById("th-filter-category");
+      const qtyEl = document.getElementById("th-filter-qty");
+      const notesEl = document.getElementById("th-filter-notes");
+      if (nameEl) nameEl.value = "";
+      if (catEl) catEl.value = "all";
+      if (qtyEl) qtyEl.value = "all";
+      if (notesEl) notesEl.value = "";
+      renderStockRows();
+    }
+
+    function openAddStockModal() {
+      document.getElementById("modal-stock-title").textContent = "Tambah Bahan ke Stock";
+      document.getElementById("stock-edit-id-input").value = "";
+      document.getElementById("stock-name-input").value = "";
+      document.getElementById("stock-cat-input").value = "Bahan Pokok";
+      document.getElementById("stock-unit-input").value = "gram";
+      document.getElementById("stock-qty-input").value = "500";
+      document.getElementById("stock-min-input").value = "100";
+      document.getElementById("stock-notes-input").value = "";
+      openModal("modal-stock");
+    }
+
+    function openEditStockModal(stockId) {
+      const item = appState.stock.find((s) => s.id === stockId);
+      if (!item) return;
+      document.getElementById("modal-stock-title").textContent = "Edit Bahan Stock";
+      document.getElementById("stock-edit-id-input").value = item.id;
+      document.getElementById("stock-name-input").value = item.name;
+      document.getElementById("stock-cat-input").value = item.category;
+      document.getElementById("stock-unit-input").value = item.unit;
+      document.getElementById("stock-qty-input").value = String(item.qty);
+      document.getElementById("stock-min-input").value = String(item.minQty);
+      document.getElementById("stock-notes-input").value = item.notes || "";
+      openModal("modal-stock");
+    }
+
+    function handleSaveStock(e) {
+      e.preventDefault();
+      const editId = document.getElementById("stock-edit-id-input").value;
+      const name = document.getElementById("stock-name-input").value.trim();
+      const category = document.getElementById("stock-cat-input").value;
+      const unit = document.getElementById("stock-unit-input").value;
+      const qty = parseFloat(document.getElementById("stock-qty-input").value) || 0;
+      const minQty = parseFloat(document.getElementById("stock-min-input").value) || 0;
+      const notes = document.getElementById("stock-notes-input").value.trim();
+
+      if (!name) return;
+
+      if (editId) {
+        const existing = appState.stock.find((s) => s.id === editId);
+        if (existing) {
+          existing.name = name;
+          existing.category = category;
+          existing.unit = unit;
+          existing.qty = qty;
+          existing.minQty = minQty;
+          existing.notes = notes;
+        }
+        saveAppState();
+        closeModal("modal-stock");
+        renderStockView();
+        showToast(`${name} diperbarui`);
+        return;
+      }
+
+      appState.stock.unshift({
+        id: "stk-" + Date.now(),
+        name,
+        category,
+        unit,
+        qty,
+        minQty,
+        notes
+      });
+      saveAppState();
+      closeModal("modal-stock");
+      renderStockView();
+      showToast(`${name} ditambahkan ke stock`);
+    }
+
+    function syncStockCategoryFilterOptions() {
+      const catSelect = document.getElementById("th-filter-category");
+      if (!catSelect) return;
+      const prevVal = catSelect.value || "all";
+      const uniqueCats = Array.from(new Set(appState.stock.map((s) => s.category))).filter(Boolean);
+      catSelect.innerHTML =
+        `<option value="all">Semua Kategori</option>` +
+        uniqueCats.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      catSelect.value = uniqueCats.includes(prevVal) ? prevVal : "all";
+    }
+
+    function renderStockView() {
+      syncStockCategoryFilterOptions();
+      renderStockRows();
+    }
+
+    function renderStockRows() {
+      const nameQuery = (document.getElementById("th-filter-name")?.value || "").toLowerCase();
+      const catFilter = document.getElementById("th-filter-category")?.value || "all";
+      const qtyFilter = document.getElementById("th-filter-qty")?.value || "all";
+      const notesQuery = (document.getElementById("th-filter-notes")?.value || "").toLowerCase();
+
+      const hasActiveFilter =
+        Boolean(nameQuery) || catFilter !== "all" || qtyFilter !== "all" || Boolean(notesQuery);
+      const resetFilterBtn = document.getElementById("stock-reset-filter-btn");
+      if (resetFilterBtn) {
+        resetFilterBtn.classList.toggle("hidden", !hasActiveFilter);
+      }
+
+      let filtered = appState.stock.filter((item) => {
+        const matchName = item.name.toLowerCase().includes(nameQuery);
+        const matchCat = catFilter === "all" || item.category === catFilter;
+        const isLow = item.qty <= item.minQty;
+        let matchQty = true;
+        if (qtyFilter === "low") matchQty = isLow;
+        if (qtyFilter === "safe") matchQty = !isLow;
+        const itemNotes = (item.notes || "").toLowerCase();
+        const matchNotes = itemNotes.includes(notesQuery);
+        return matchName && matchCat && matchQty && matchNotes;
+      });
+
+      if (qtyFilter === "desc") {
+        filtered = [...filtered].sort((a, b) => b.qty - a.qty);
+      } else if (qtyFilter === "asc") {
+        filtered = [...filtered].sort((a, b) => a.qty - b.qty);
+      }
+
+      const headerCountEl = document.getElementById("stock-log-header-count");
+      if (headerCountEl) {
+        headerCountEl.textContent = `Daftar Bahan (${filtered.length})`;
+      }
+
+      const tbody = document.getElementById("stock-table-tbody");
+      if (!tbody) return;
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center;padding:1.75rem 1rem;color:var(--text-muted);font-size:0.84rem;white-space:normal;">
+              Tidak ada bahan dapur yang sesuai filter kolom.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map((item, idx) => {
+          const isLow = item.qty <= item.minQty;
+          return `
+            <tr class="${isLow ? "low-stock-row" : ""}">
+              <td class="log-row-num">#${idx + 1}</td>
+              <td>
+                <div class="log-name-cell">
+                  <button type="button" onclick="openEditStockModal('${item.id}')" class="log-inline-edit-btn" title="Klik untuk ubah detail bahan">
+                    ${escapeHtml(item.name)}
+                  </button>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge-neutral">${escapeHtml(item.category)}</span>
+              </td>
+              <td>
+                <div class="qty-stepper-compact">
+                  <button type="button" onclick="adjustStockQty('${item.id}', -1)" aria-label="Kurangi">−</button>
+                  <button type="button" onclick="openEditStockModal('${item.id}')" class="qty-val-trigger ${isLow ? "low" : "safe"}" title="Klik untuk edit angka langsung">
+                    ${item.qty} ${escapeHtml(item.unit)}
+                  </button>
+                  <button type="button" onclick="adjustStockQty('${item.id}', 1)" aria-label="Tambah">+</button>
+                </div>
+              </td>
+              <td>
+                ${
+                  isLow
+                    ? `<span class="badge badge-rose">Menipis (≤${item.minQty})</span>`
+                    : `<span class="badge badge-emerald">Aman</span>`
+                }
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="log-note-input"
+                  value="${escapeHtml(item.notes || "")}"
+                  placeholder="Tambah keterangan..."
+                  aria-label="Keterangan untuk ${escapeHtml(item.name)}"
+                  oninput="updateStockNotes('${item.id}', this.value)"
+                />
+              </td>
+              <td style="text-align:right;">
+                <button type="button" onclick="deleteStockItem('${item.id}')" class="btn btn-danger" style="padding:0.32rem 0.6rem;font-size:0.74rem;" title="Hapus Bahan">
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    /* =====================================================================
+       6. LOGIKA VIEW 2: MAKANAN / RESEP
+       ===================================================================== */
+    function checkRecipeAvailability(recipe) {
+      if (!recipe || !Array.isArray(recipe.ingredients) || !recipe.ingredients.length) {
+        return { ready: true, missingItems: [] };
+      }
+      const missingItems = [];
+      recipe.ingredients.forEach((ing) => {
+        const stockItem = appState.stock.find((s) => s.id === ing.stockId);
+        const needed = Number(ing.amount) || 0;
+        const available = stockItem ? Number(stockItem.qty) || 0 : 0;
+        if (!stockItem || available < needed) {
+          missingItems.push({
+            name: stockItem ? stockItem.name : "Bahan tidak ditemukan",
+            unit: stockItem ? stockItem.unit : "",
+            needed,
+            available
+          });
+        }
+      });
+      return { ready: missingItems.length === 0, missingItems };
+    }
+
+    function cookRecipeNow(recipeId) {
+      const recipe = appState.recipes.find((r) => r.id === recipeId);
+      if (!recipe) return;
+      const check = checkRecipeAvailability(recipe);
+      if (!check.ready) {
+        showToast("Bahan belum cukup untuk memasak menu ini");
+        return;
+      }
+      recipe.ingredients.forEach((ing) => {
+        const stockItem = appState.stock.find((s) => s.id === ing.stockId);
+        if (stockItem) {
+          stockItem.qty = Math.max(0, Number((stockItem.qty - Number(ing.amount || 0)).toFixed(2)));
+        }
+      });
+      saveAppState();
+      renderAllViews();
+      showToast(`${recipe.name} dimasak & stok bahan diperbarui`);
+    }
+
+    function deleteRecipeItem(recipeId) {
+      appState.recipes = appState.recipes.filter((r) => r.id !== recipeId);
+      appState.schedule = appState.schedule.filter((s) => s.recipeId !== recipeId);
+      saveAppState();
+      renderAllViews();
+      showToast("Resep dihapus");
+    }
+
+    function openAddRecipeModal() {
+      document.getElementById("recipe-name-input").value = "";
+      document.getElementById("recipe-tag-input").value = "Hidangan Utama";
+      document.getElementById("recipe-time-input").value = "25";
+      const builder = document.getElementById("recipe-ingredients-builder");
+      builder.innerHTML = "";
+      appendRecipeIngredientRow();
+      openModal("modal-recipe");
+    }
+
+    function appendRecipeIngredientRow(selectedStockId = "", amountVal = 100) {
+      const builder = document.getElementById("recipe-ingredients-builder");
+      if (!builder) return;
+      const optionsHtml = appState.stock
+        .map((s) => `<option value="${s.id}" ${s.id === selectedStockId ? "selected" : ""}>${escapeHtml(s.name)} (${escapeHtml(s.unit)})</option>`)
+        .join("");
+
+      const row = document.createElement("div");
+      row.className = "recipe-ing-row";
+      row.style.cssText = "display:grid;grid-template-columns:1fr 90px auto;gap:0.4rem;align-items:center;";
+      row.innerHTML = `
+        <select class="select-field recipe-ing-stock" style="padding:0.48rem 0.6rem;font-size:0.8rem;">
+          ${optionsHtml || '<option value="">Belum ada stok bahan</option>'}
+        </select>
+        <input type="number" class="input-field recipe-ing-amount" style="padding:0.48rem 0.6rem;font-size:0.8rem;" min="0.1" step="any" value="${amountVal}" required />
+        <button type="button" onclick="this.parentElement.remove()" class="btn btn-danger" style="padding:0.45rem 0.6rem;font-size:0.75rem;" aria-label="Hapus baris bahan">✕</button>
+      `;
+      builder.appendChild(row);
+    }
+
+    function handleSaveRecipe(e) {
+      e.preventDefault();
+      const name = document.getElementById("recipe-name-input").value.trim();
+      const tag = document.getElementById("recipe-tag-input").value;
+      const prepMinutes = parseInt(document.getElementById("recipe-time-input").value, 10) || 20;
+      if (!name) return;
+
+      const ingredients = [];
+      document.querySelectorAll("#recipe-ingredients-builder .recipe-ing-row").forEach((row) => {
+        const stockId = row.querySelector(".recipe-ing-stock")?.value;
+        const amount = parseFloat(row.querySelector(".recipe-ing-amount")?.value) || 0;
+        if (stockId && amount > 0) {
+          ingredients.push({ stockId, amount });
+        }
+      });
+
+      appState.recipes.unshift({
+        id: "rec-" + Date.now(),
+        name,
+        tag,
+        prepMinutes,
+        ingredients
+      });
+      saveAppState();
+      closeModal("modal-recipe");
+      renderAllViews();
+      showToast(`Resep "${name}" ditambahkan`);
+    }
+
+    function renderRecipesView() {
+      const query = (document.getElementById("recipe-search-input")?.value || "").toLowerCase();
+      const filter = document.getElementById("recipe-filter-select")?.value || "all";
+
+      const evaluated = appState.recipes.map((recipe) => ({
+        recipe,
+        availability: checkRecipeAvailability(recipe)
+      }));
+
+      const readyTotal = evaluated.filter((x) => x.availability.ready).length;
+      const missingTotal = evaluated.length - readyTotal;
+
+      const statsGrid = document.getElementById("recipes-stats-grid");
+      if (statsGrid) {
+        statsGrid.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-label">Total Resep</div>
+            <div class="stat-value">${appState.recipes.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Siap Dimasak</div>
+            <div class="stat-value" style="color:#059669;">${readyTotal}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Bahan Kurang</div>
+            <div class="stat-value" style="color:#E11D48;">${missingTotal}</div>
+          </div>
+        `;
+      }
+
+      const filtered = evaluated.filter(({ recipe, availability }) => {
+        const matchesQuery = recipe.name.toLowerCase().includes(query) || recipe.tag.toLowerCase().includes(query);
+        if (filter === "ready") return matchesQuery && availability.ready;
+        if (filter === "missing") return matchesQuery && !availability.ready;
+        return matchesQuery;
+      });
+
+      const container = document.getElementById("recipes-list-container");
+      if (!container) return;
+
+      if (!filtered.length) {
+        container.innerHTML = `<div class="royal-card" style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted);">Tidak ada resep yang cocok dengan filter.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered
+        .map(({ recipe, availability }) => {
+          const ingBadges = recipe.ingredients
+            .map((ing) => {
+              const s = appState.stock.find((item) => item.id === ing.stockId);
+              const sName = s ? s.name : "Bahan hilang";
+              const sUnit = s ? s.unit : "";
+              const enough = s && Number(s.qty) >= Number(ing.amount);
+              return `<span class="badge ${enough ? "badge-neutral" : "badge-rose"}" style="justify-content:flex-start;gap:0.25rem;">${escapeHtml(sName)}: ${ing.amount} ${escapeHtml(sUnit)}</span>`;
+            })
+            .join("");
+
+          return `
+            <article class="royal-card ${availability.ready ? "ready-recipe" : ""}">
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.45rem;">
+                  <span class="badge badge-neutral">${escapeHtml(recipe.tag)} • ⏱ ${recipe.prepMinutes} mnt</span>
+                  ${
+                    availability.ready
+                      ? `<span class="badge badge-emerald">✓ Siap Dimasak</span>`
+                      : `<span class="badge badge-rose">Bahan Kurang</span>`
+                  }
+                </div>
+                <h3 style="font-size:1.05rem;font-weight:800;margin-bottom:0.55rem;">${escapeHtml(recipe.name)}</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:0.35rem;">
+                  ${ingBadges || '<span style="font-size:0.78rem;color:var(--text-muted);">Tanpa rincian bahan</span>'}
+                </div>
+              </div>
+
+              <div style="display:flex;gap:0.5rem;padding-top:0.65rem;border-top:1px solid var(--border-soft);">
+                <button
+                  type="button"
+                  onclick="cookRecipeNow('${recipe.id}')"
+                  class="btn ${availability.ready ? "btn-primary" : "btn-secondary"}"
+                  style="flex:1;${availability.ready ? "" : "opacity:0.65;"}"
+                  ${availability.ready ? "" : "disabled"}
+                >
+                  🍳 Masak Sekarang
+                </button>
+                <button type="button" onclick="deleteRecipeItem('${recipe.id}')" class="btn btn-danger" style="padding:0.5rem 0.7rem;">
+                  Hapus
+                </button>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    /* =====================================================================
+       7. LOGIKA VIEW 3: SCHEDULE MASAK
+       ===================================================================== */
+    function openAddScheduleModal() {
+      const sel = document.getElementById("schedule-recipe-input");
+      if (!appState.recipes.length) {
+        showToast("Tambahkan resep di tab Makanan terlebih dahulu");
+        return;
+      }
+      sel.innerHTML = appState.recipes
+        .map((r) => `<option value="${r.id}">${escapeHtml(r.name)}</option>`)
+        .join("");
+      document.getElementById("schedule-date-input").value = new Date().toISOString().split("T")[0];
+      document.getElementById("schedule-note-input").value = "";
+      openModal("modal-schedule");
+    }
+
+    function handleSaveSchedule(e) {
+      e.preventDefault();
+      const date = document.getElementById("schedule-date-input").value;
+      const meal = document.getElementById("schedule-meal-input").value;
+      const recipeId = document.getElementById("schedule-recipe-input").value;
+      const note = document.getElementById("schedule-note-input").value.trim();
+
+      if (!date || !recipeId) return;
+      appState.schedule.push({
+        id: "sch-" + Date.now(),
+        date,
+        meal,
+        recipeId,
+        note,
+        done: false
+      });
+      saveAppState();
+      closeModal("modal-schedule");
+      renderScheduleView();
+      showToast("Jadwal masak berhasil ditambahkan");
+    }
+
+    function toggleScheduleDone(id) {
+      const item = appState.schedule.find((s) => s.id === id);
+      if (!item) return;
+      item.done = !item.done;
+      saveAppState();
+      renderScheduleView();
+    }
+
+    function deleteScheduleItem(id) {
+      appState.schedule = appState.schedule.filter((s) => s.id !== id);
+      saveAppState();
+      renderScheduleView();
+      showToast("Jadwal dihapus");
+    }
+
+    function renderScheduleView() {
+      const activeCount = appState.schedule.filter((s) => !s.done).length;
+      const statsGrid = document.getElementById("schedule-stats-grid");
+      if (statsGrid) {
+        statsGrid.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-label">Total Jadwal</div>
+            <div class="stat-value">${appState.schedule.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Menunggu Dimasak</div>
+            <div class="stat-value" style="color:#B45309;">${activeCount}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Selesai Disajikan</div>
+            <div class="stat-value" style="color:#059669;">${appState.schedule.length - activeCount}</div>
+          </div>
+        `;
+      }
+
+      const container = document.getElementById("schedule-list-container");
+      if (!container) return;
+
+      if (!appState.schedule.length) {
+        container.innerHTML = `<div class="royal-card" style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted);">Belum ada jadwal menu. Klik "+ Jadwalkan Menu" untuk memulai.</div>`;
+        return;
+      }
+
+      const sorted = [...appState.schedule].sort((a, b) => a.date.localeCompare(b.date));
+      container.innerHTML = sorted
+        .map((item) => {
+          const recipe = appState.recipes.find((r) => r.id === item.recipeId);
+          const recipeName = recipe ? recipe.name : "Menu Terhapus";
+          return `
+            <article class="royal-card" style="opacity:${item.done ? "0.72" : "1"};">
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.45rem;">
+                  <span class="badge badge-neutral">📅 ${escapeHtml(item.date)} • ${escapeHtml(item.meal)}</span>
+                  ${
+                    item.done
+                      ? `<span class="badge badge-emerald">Selesai</span>`
+                      : `<span class="badge badge-amber">Terjadwal</span>`
+                  }
+                </div>
+                <h3 style="font-size:1.05rem;font-weight:800;text-decoration:${
+                  item.done ? "line-through" : "none"
+                };">${escapeHtml(recipeName)}</h3>
+                ${
+                  item.note
+                    ? `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem;">📝 ${escapeHtml(item.note)}</p>`
+                    : ""
+                }
+              </div>
+
+              <div style="display:flex;gap:0.5rem;padding-top:0.55rem;border-top:1px solid var(--border-soft);">
+                <button type="button" onclick="toggleScheduleDone('${item.id}')" class="btn ${
+            item.done ? "btn-secondary" : "btn-gold"
+          }" style="flex:1;">
+                  ${item.done ? "↩ Batal Selesai" : "✓ Tandai Selesai"}
+                </button>
+                <button type="button" onclick="deleteScheduleItem('${item.id}')" class="btn btn-danger" style="padding:0.5rem 0.7rem;">
+                  Hapus
+                </button>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    /* =====================================================================
+       8. SINKRONISASI BADGE SIDEBAR & INISIALISASI
+       ===================================================================== */
+    function updateSidebarCounters() {
+      const lowCount = appState.stock.filter((s) => s.qty <= s.minQty).length;
+      const alertBadge = document.getElementById("sidebar-stock-alert");
+      if (alertBadge) {
+        alertBadge.textContent = String(lowCount);
+        alertBadge.classList.toggle("hidden", lowCount === 0);
+      }
+
+      const readyCount = appState.recipes.filter((r) => checkRecipeAvailability(r).ready).length;
+      const readyEl = document.getElementById("sidebar-ready-count");
+      if (readyEl) readyEl.textContent = `${readyCount} siap`;
+
+      const schedCount = appState.schedule.filter((s) => !s.done).length;
+      const schedEl = document.getElementById("sidebar-schedule-count");
+      if (schedEl) schedEl.textContent = `${schedCount} jadwal`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderAllViews() {
+      updateSidebarCounters();
+      renderStockView();
+      renderRecipesView();
+      renderScheduleView();
+    }
+
+    // Inisialisasi saat halaman dimuat
+    applyTheme();
+    applyZoom();
+    applyNavVisibility();
+    renderAllViews();
+  </script>
+</body>
+</html>
